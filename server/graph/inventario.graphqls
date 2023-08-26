@@ -1,0 +1,124 @@
+# scalar Time 
+
+type Categorias {
+    id: ID!
+    nombre: String!
+    descripcion: String!
+    estado: Boolean!
+    registrado: Time!
+}
+
+type Productos {
+    id: ID!
+    nombre: String!
+    codigo: String!
+    unidad_medida: String!
+    precio_entrada: Float!
+    precio_salida: Float!
+    categoria_id: ID!
+    registrado: Time!
+}
+
+type Personas {
+    id: ID!
+    nombres: String!
+    apellidos: String!
+    telefono: String!
+    correo: String!
+    direccion: String!
+    tipo: String! 
+    registrado: Time!
+}
+
+type Transacciones {
+    id: ID!
+    tipo: String!
+    descripcion: String!
+    persona_id: ID!
+    usuario_id: ID! 
+    registrado: Time!
+}
+
+type DetalleTransacciones {
+    id: ID!
+    transaccion_id: ID!
+    producto_id: ID!
+    cantidad: Int!
+    precio_unitario: Float!  
+}
+
+type Almacenes {
+    id: ID!
+    nombre: String!
+    descripcion: String! 
+    registrado: Time!
+}
+
+type Ubicaciones {
+    id: ID!
+    almacen_id: ID!
+    producto_id: ID! 
+    cantidad: Int! 
+    registrado: Time!
+}
+
+# ============================================================
+# ============================================================
+# ============================================================
+
+input NewCategoria {
+    id: ID
+    nombre: String!
+    descripcion: String!
+}
+
+input NewProducto {
+    id: ID
+    nombre: String!
+    codigo: String!
+    unidad_medida: String!
+    precio_entrada: Float!
+    precio_salida: Float!
+    categoria_id: ID!
+}
+
+input NewPersona {
+    id: ID
+    nombres: String!
+    apellidos: String!
+    telefono: String!
+    correo: String!
+    direccion: String!
+    tipo: String! 
+}
+
+
+input NewDetalleTransaccion {  
+    producto_id: ID!
+    cantidad: Int!
+    precio_unitario: Float!  
+}
+
+
+input NewTransaccion {
+    tipo: String!
+    descripcion: String!
+    persona_id: ID!
+    usuario_id: ID!
+    detalles:[NewDetalleTransaccion!]!
+}
+
+input NewAlmacen {
+    id: ID
+    nombre: String!
+    descripcion: String! 
+}
+
+input NewUbicacion {
+    id: ID
+    almacen_id: ID!
+    producto_id: ID! 
+    cantidad: Int! 
+}
+
+# ============================================================

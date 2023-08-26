@@ -1,0 +1,172 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+scalar Time
+
+type Usuario{
+  id: ID! 
+  nombres: String!
+  apellidos: String!
+  username: String!
+  telefono: String
+  documento: String!
+  correo: String
+  foto_url: String
+  fecha_nac: Time
+  domicilio: String
+  registrado: Time!
+  estado: Boolean! 
+} 
+
+type UsuarioLogin {
+  id: ID! 
+  nombres: String!
+  apellidos: String!
+  username: String!
+  foto_url: String
+  telefono: String
+  correo: String
+  documento: String!
+  fecha_nac: Time
+  domicilio: String
+  registrado: Time!
+  estado: Boolean!
+  dataname: String!
+  rol_id: ID!
+  rol: String!
+  exp: String!
+} 
+
+type Rol { 
+  id: ID! 
+  nombre: String!
+  bit: Int!
+}
+
+type Tokens {
+  username: String! 
+  token: String! 
+  registrado: Time!
+}
+
+type RolPermiso {
+  metodo: String! 
+  descripcion: String! 
+  """ los roles que tienen acceso a este permiso, expresado en suma sumaria << bits"""
+  rol_bits: Int!
+}
+# ==============================================================================
+
+type UsuariosResponse {
+  id: ID! 
+  nombres: String!
+  apellidos: String!
+  username: String!
+  foto_url: String
+  telefono: String
+  documento: String!
+  fecha_nac: Time
+  domicilio: String
+  correo: String
+  registrado: Time!
+  estado: Boolean!
+  dataname: String!
+  roles:[Rol!]!
+}
+
+type RolResponse{
+  id: ID! 
+  nombre: String!
+  bit: Int!
+  permisos: Int!
+  usuarios: Int!
+}
+
+# ==============================================================================
+input NewUsuario { 
+  nombres: String!
+  apellidos: String!
+  username: String!
+  documento: String!
+  password: String
+  foto_url: String
+  telefono: String
+  correo: String
+  fecha_nac: Time
+  domicilio: String
+  roles:[ID!]!
+} 
+
+input UpdateUsuario {
+  id: ID!  
+  nombres: String!
+  apellidos: String!
+  username: String!
+  documento: String!
+  password: String
+  foto_url: String
+  telefono: String
+  correo: String
+  fecha_nac: Time
+  domicilio: String
+  roles:[ID!]!
+}  
+
+input NewRol { 
+  nombre: String! 
+  permisos: [String!]!
+}
+
+input UpdateRol {
+  id: ID!  
+  nombre: String! 
+  permisos: [String!]!
+} 
+# ==============================================================================
+
+
+
+# go run github.com/99designs/gqlgen generate
+type Query {
+  """ Retorna al usuario con el username proporcionados"""
+  usuarioByUsername(username:String!): UsuariosResponse!
+  """ Retorna un listado de los permisos registrados """
+  permisos:[RolPermiso!]!
+  """ Retorna un listado de los roles registrados """
+  roles(lite:Boolean!):[RolResponse!]! 
+  """ Retorna un listado de los usuarios registrados """
+  usuarios:[UsuariosResponse!]! 
+  """ listar todos los permisos accesibles por un rol """
+  permisosByRol(rol_id:ID!,):[RolPermiso!]! 
+}
+
+
+
+# la logica es la sig:
+# primero te loqueas, esto devuelve un array de roles
+# segundo seleccionas el rol, esto recien crea el token para ese rol
+# tercero ya puedes usar las demas funciones
+type Mutation {
+  """ Autentifica al usuario y retorna un listado de roles asignados a ese usuario """
+  login(username:String!, password:String!): [Rol!]!
+  """ Autentifica al usuario usando el rol seleccionado """
+  useRol(username:String!, password:String!, rol_id:ID!): UsuarioLogin!
+  """ Registra a un nuevo usuario en el sistema y retorna los datos del registro """
+  createUsuario(input: NewUsuario!): Usuario! 
+  """ Actualiza a un usuario y retorna los datos actualizados """
+  updateUsuario(input: UpdateUsuario!): Usuario! 
+  """ Registra un nuevo rol en el sistema y retorna los datos del registro """
+  createRol(input: NewRol!): Rol!
+  """ elimina un rol registrado en el sistema """
+  deleteRol(rol_id:ID!): Boolean!
+  """ Modifica los datos de un rol y retorna los datos modificados """
+  modificarRol(input: UpdateRol!): Rol!
+  # SE HAN ELIMINADO, ESTO DEBE SER AGREGADO DIRECTO POR CODIGO
+  # YA QUE CADA PERNISO VA LIGADO A UNA FUNCION GRAPHQL
+  # """ Registra un uevo permiso en el sistema y retorna el registrado """
+  # crearNuevoPermiso(input:NewRolPermiso!): RolPermiso!
+  # """ Elimina un permiso del sistema """
+  # eliminarPermiso(metodo:String!): Boolean!
+  # """ Actualiza los datos del permiso y retorna el registro """
+  # actualizarPermiso(input:NewRolPermiso!): RolPermiso! 
+}
