@@ -12,7 +12,12 @@ func GetByUsuVehiculo(db *sql.DB, usuario, vehiculo string) (*model.ConductorVeh
 	if row == nil {
 		return nil, errors.New("no existe vehiculo con el conductor")
 	}
-	return GetByUsuVehiculo(db, usuario, vehiculo)
+	cv := model.ConductorVehiculos{}
+	er := parse(row, &cv)
+	if er != nil {
+		return nil, er
+	}
+	return &cv, nil
 }
 
 func UsuariosByVehiculo(db *sql.DB, vehiculoid string) ([]*model.UsuariosResponse, error) {

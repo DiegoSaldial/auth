@@ -5,7 +5,7 @@ import (
 	"taxis/graph/model"
 )
 
-func parse(row *sql.Row, t model.ConductorVehiculos) error {
+func parse(row *sql.Row, t *model.ConductorVehiculos) error {
 	return row.Scan(
 		&t.UsuarioID,
 		&t.VehiculoID,

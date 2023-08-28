@@ -11,6 +11,7 @@ func Crear(db *sql.DB, input model.CreateConductorVehiculos) (*model.ConductorVe
 	if err != nil {
 		return nil, err
 	}
+
 	return GetByUsuVehiculo(db, input.UsuarioID, input.VehiculoID)
 
 }
