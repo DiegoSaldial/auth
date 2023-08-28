@@ -138,6 +138,30 @@ type Query {
   usuarios:[UsuariosResponse!]! 
   """ listar todos los permisos accesibles por un rol """
   permisosByRol(rol_id:ID!,):[RolPermiso!]! 
+  # ============================================================
+  # ============================================================
+  """ Retorna las direcciones asociadas a un usuario """
+    direccionesByUsuario(usuario_id:ID!): [Direcciones!]!
+    """ Retorna las categoias de vehiculos disponibles """
+    categoria_vehiculos: [CategoriaVehiculos!]!
+    """ Retorna los vehiculos registrados """
+    vehiculos: [Vehiculos!]! 
+    """ Retorna los vehiculos por categoria """
+    vehiculosByCategoria(categoria_id:ID!): [Vehiculos!]!
+    """ Retorna vehiculos asociados a un conductor """
+    vehiculosByConductor(usuario_id:ID!): [Vehiculos!]!
+    """ Retorna los usuarios asignados a un vehiculo """
+    conductoresByVehiculo(vehiculo_id:ID!): [UsuariosResponse!]!
+    """ Retorna las solicitudes de viajes disponibles dentro de un radio seleccionado """
+    viajesCercanos(lat:Float!,lon:Float!,radioMts:Int!): [Viajes!]!
+    """ Retorna los viajes de un usuario """
+    viajesByUsuario(usuario_id:ID!): [Viajes!]!
+    """ Retorna los viajes de un usuario que haya solicitado un vehiculo """
+    viajesByPasajero(usuario_id:ID!): [Viajes!]!
+    """ Retorna los viajes de un usuario que haya aceptado el viaje """
+    viajesByConductor(usuario_id:ID!): [Viajes!]!
+    """ Retorna los viajes segun la categoria """
+    viajesByCategoria(categoria_id:ID!): [Viajes!]!
 }
 
 
@@ -169,4 +193,24 @@ type Mutation {
   # eliminarPermiso(metodo:String!): Boolean!
   # """ Actualiza los datos del permiso y retorna el registro """
   # actualizarPermiso(input:NewRolPermiso!): RolPermiso! 
+  # ==============================================================
+  # ==============================================================
+  """ Crea una direccion, si se pasa el id lo actualiza """
+    createUpdateDireccion(input:CreateDirecciones!): Direcciones!
+    """ Crea una categoria de vehiculo, si se pasa el id lo actualiza"""
+    createUpdateCategoriaVehiculo(input:CreateCategoriaVehiculos!): CategoriaVehiculos!
+    """ Crea un vehiculo si se pasa el id lo actualiza"""
+    createUpdateVehiculo(input:CreateVehiculos!): Vehiculos!
+    """ Crea un registro con el vehiculo y usuario asignado como conductor """
+    asignarVehiculo(input:CreateConductorVehiculos!): ConductorVehiculos!
+    """ Crea un nuevo viaje que va estar disponible para los conductores """
+    createViaje(input:CreateViajes!): Viajes!
+    """ Crea un registro con el conductor que acepta el viaje"""
+    aceptarViaje(viaje_id:ID!,usuario_id:ID!): Viajes!
+    """ El conductor cancela el viaje, se elimina el id conductor del viaje y queda libre para otro conductor """
+    cancelarViaje(id:ID!): Viajes!
+    """ El pasajero finaliza el viaje, marcando el estado a false y nadie puede aceptar el viaje """
+    finalizarViaje(id:ID!): Viajes!
+    """ Crea un registro de la ubicacion actual del viaje """
+    setUbicacionViaje(input:CreateViajesLocations!): ViajesLocations!
 }

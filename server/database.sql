@@ -48,84 +48,78 @@ create table `tokens`(
 -- =====================================================================================================================
 -- =====================================================================================================================
 
-create table `categorias`(
+create table `direcciones`(
     `id` integer unsigned not null auto_increment primary key, 
     `nombre` varchar(100) not null,
-    `descripcion` varchar(250) not null,
-    `estado` tinyint(1) not null default 1,
-    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00') ON UPDATE CURRENT_TIMESTAMP
-);
-
-create table `productos`(
-    `id` integer unsigned not null auto_increment primary key, 
-    `nombre` varchar(100) not null,
-    `codigo` varchar(100) not null UNIQUE,
-    `unidad_medida` varchar(50) not null,
-    `descripcion` varchar(250) not null,
-    `precio_entrada` DECIMAL(10, 2) not null,
-    `precio_salida` DECIMAL(10, 2) not null,
-    `categoria_id` integer unsigned not null, 
-    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00') ON UPDATE CURRENT_TIMESTAMP,
-    foreign key(`categoria_id`) references `categorias`(`id`)
-);
-
-CREATE TABLE `personas` (
-    `id` integer unsigned not null auto_increment primary key, 
-    `nombres` VARCHAR(30) not null,
-    `apellidos` VARCHAR(30) not null,
-    `telefono` VARCHAR(20),
-    `correo` VARCHAR(100),
-    `direccion` VARCHAR(220),
-    `tipo` ENUM('cliente', 'proveedor'),
-    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00') ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE `transacciones` (
-    `id` integer unsigned not null auto_increment primary key, 
-    `tipo` ENUM('compra', 'venta'), 
-    `descripcion` varchar(250) not null,
-    `persona_id` integer unsigned not null,  
+    `descripcion` varchar(250) not null, 
+    `ubicacion` POINT NOT NULL,
     `usuario_id` integer unsigned not null,
-    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00') ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`persona_id`) REFERENCES personas(`id`),
+    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00'),
     foreign key(`usuario_id`) references `usuarios`(`id`)
-);  
+);
 
-CREATE TABLE `detalle_transacciones` (
+create table `categoria_vehiculos`(
     `id` integer unsigned not null auto_increment primary key, 
-    `transaccion_id` integer unsigned not null,
-    `producto_id` integer unsigned not null,
-    `cantidad` integer not null,
-    `precio_unitario` DECIMAL(10, 2) not null,
-    FOREIGN KEY (`transaccion_id`) REFERENCES transacciones(`id`),
-    FOREIGN KEY (`producto_id`) REFERENCES productos(`id`)
+    `nombre` varchar(15) not null UNIQUE,
+    `descripcion` varchar(250) not null
 );
 
-CREATE TABLE `almacenes` (
-    `id` integer unsigned not null auto_increment primary key,
-    `nombre` VARCHAR(100) not null,
+create table `vehiculos`(
+    `id` integer unsigned not null auto_increment primary key, 
+    `placa` varchar(15) not null UNIQUE,
+    `puertas` smallint not null,
+    `capacidad` smallint not null,
     `descripcion` varchar(250) not null,
-    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00') ON UPDATE CURRENT_TIMESTAMP
+    `color` varchar(30) not null, 
+    `modelo` varchar(30) not null, 
+    `anio` smallint not null,
+    `foto_url` varchar(200),
+    `categoria_id` integer unsigned not null, 
+    `estado` tinyint(1) not null default 1,
+    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00'),
+    foreign key(`categoria_id`) references `categoria_vehiculos`(`id`)
 );
 
-CREATE TABLE `ubicaciones` (
-    `id` integer unsigned not null auto_increment primary key,
-    `almacen_id` integer unsigned not null,
-    `producto_id` integer unsigned not null,
-    `cantidad` integer not null,
-    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00') ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`almacen_id`) REFERENCES almacenes(`id`),
-    FOREIGN KEY (`producto_id`) REFERENCES productos(`id`)
+create table `conductor_vehiculos`(
+    `usuario_id` integer unsigned not null,
+    `vehiculo_id` integer unsigned not null,
+    `estado` tinyint(1) not null default 1,
+    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00'),
+    foreign key(`usuario_id`) references `usuarios`(`id`),
+    foreign key(`vehiculo_id`) references `vehiculos`(`id`),
+    primary key(`usuario_id`, `vehiculo_id`)
+);
+
+create table `viajes`(
+    `id` integer unsigned not null auto_increment primary key, 
+    `pasajero_id` integer unsigned not null,
+    `conductor_id` integer unsigned,
+    `estado` tinyint(1) not null default 1, 
+    `descripcion` varchar(250) not null, 
+    `origen` POINT NOT NULL,
+    `destino` POINT,
+    `categoria_id` integer unsigned not null, 
+    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00'),
+    foreign key(`pasajero_id`) references `usuarios`(`id`),
+    foreign key(`conductor_id`) references `conductor_vehiculos`(`usuario_id`),
+    foreign key(`categoria_id`) references `categoria_vehiculos`(`id`) 
+);
+
+create table `viajes_locations`(
+    `id` integer unsigned not null auto_increment primary key, 
+    `origen` POINT NOT NULL,
+    `viaje_id` integer unsigned not null,
+    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00'),
+    foreign key(`viaje_id`) references `viajes`(`id`)
 );
 
 
--- =====================================================================================================================
--- =====================================================================================================================
--- =====================================================================================================================
 
 
--- ALTER TABLE `usuarios` AUTO_INCREMENT = 1000;
--- ALTER TABLE `roles` AUTO_INCREMENT = 1000; 
+
+-- =====================================================================================================================
+-- =====================================================================================================================
+-- =====================================================================================================================
 
 insert into usuarios(nombres,apellidos,username,password,telefono,documento) values('Usuario','Administrador','admin','admin','+591 78227092','10721310');
 insert into roles(nombre,bit) values('administrador',1);
@@ -152,7 +146,4 @@ insert into rol_permiso(rol_bits,metodo,descripcion) values
     (1,"deleteRol","Elimina un rol del sistema"),
     (1,"modificarRol","Actualiza los datos de un rol");
 
--- ejercicios
--- agregar un usuario llamado juan con el rol de administrador
--- agregar un nuevo rol llamado asesor con los permisos de roles, permisos, usuarioByUsername
---  
+

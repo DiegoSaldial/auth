@@ -6,85 +6,82 @@ import (
 	"time"
 )
 
-type Almacenes struct {
-	ID          string    `json:"id"`
-	Nombre      string    `json:"nombre"`
-	Descripcion string    `json:"descripcion"`
-	Registrado  time.Time `json:"registrado"`
+type CategoriaVehiculos struct {
+	ID          string `json:"id"`
+	Nombre      string `json:"nombre"`
+	Descripcion string `json:"descripcion"`
 }
 
-type Categorias struct {
+type ConductorVehiculos struct {
+	UsuarioID  string    `json:"usuario_id"`
+	VehiculoID string    `json:"vehiculo_id"`
+	Estado     bool      `json:"estado"`
+	Registrado time.Time `json:"registrado"`
+}
+
+type CreateCategoriaVehiculos struct {
+	ID          *string `json:"id,omitempty"`
+	Nombre      string  `json:"nombre"`
+	Descripcion string  `json:"descripcion"`
+}
+
+type CreateConductorVehiculos struct {
+	UsuarioID  string `json:"usuario_id"`
+	VehiculoID string `json:"vehiculo_id"`
+}
+
+type CreateDirecciones struct {
+	ID          *string `json:"id,omitempty"`
+	Nombre      string  `json:"nombre"`
+	Descripcion string  `json:"descripcion"`
+	Latitud     float64 `json:"latitud"`
+	Longitud    float64 `json:"longitud"`
+	UsuarioID   string  `json:"usuario_id"`
+}
+
+type CreateVehiculos struct {
+	ID          *string `json:"id,omitempty"`
+	Placa       string  `json:"placa"`
+	Puertas     int     `json:"puertas"`
+	Capacidad   int     `json:"capacidad"`
+	Descripcion string  `json:"descripcion"`
+	Color       string  `json:"color"`
+	Modelo      string  `json:"modelo"`
+	Anio        int     `json:"anio"`
+	CategoriaID string  `json:"categoria_id"`
+	FotoURL     *string `json:"foto_url,omitempty"`
+}
+
+type CreateViajes struct {
+	PasajeroID  string   `json:"pasajero_id"`
+	Descripcion string   `json:"descripcion"`
+	CategoriaID string   `json:"categoria_id"`
+	OrigenLat   float64  `json:"origen_lat"`
+	OrigenLon   float64  `json:"origen_lon"`
+	DestinoLat  *float64 `json:"destino_lat,omitempty"`
+	DestinoLon  *float64 `json:"destino_lon,omitempty"`
+}
+
+type CreateViajesLocations struct {
+	ViajeID  string  `json:"viaje_id"`
+	Latitud  float64 `json:"latitud"`
+	Longitud float64 `json:"longitud"`
+}
+
+type Direcciones struct {
 	ID          string    `json:"id"`
 	Nombre      string    `json:"nombre"`
 	Descripcion string    `json:"descripcion"`
+	Latitud     float64   `json:"latitud"`
+	Longitud    float64   `json:"longitud"`
 	Estado      bool      `json:"estado"`
+	UsuarioID   string    `json:"usuario_id"`
 	Registrado  time.Time `json:"registrado"`
-}
-
-type DetalleTransacciones struct {
-	ID             string  `json:"id"`
-	TransaccionID  string  `json:"transaccion_id"`
-	ProductoID     string  `json:"producto_id"`
-	Cantidad       int     `json:"cantidad"`
-	PrecioUnitario float64 `json:"precio_unitario"`
-}
-
-type NewAlmacen struct {
-	ID          *string `json:"id,omitempty"`
-	Nombre      string  `json:"nombre"`
-	Descripcion string  `json:"descripcion"`
-}
-
-type NewCategoria struct {
-	ID          *string `json:"id,omitempty"`
-	Nombre      string  `json:"nombre"`
-	Descripcion string  `json:"descripcion"`
-}
-
-type NewDetalleTransaccion struct {
-	ProductoID     string  `json:"producto_id"`
-	Cantidad       int     `json:"cantidad"`
-	PrecioUnitario float64 `json:"precio_unitario"`
-}
-
-type NewPersona struct {
-	ID        *string `json:"id,omitempty"`
-	Nombres   string  `json:"nombres"`
-	Apellidos string  `json:"apellidos"`
-	Telefono  string  `json:"telefono"`
-	Correo    string  `json:"correo"`
-	Direccion string  `json:"direccion"`
-	Tipo      string  `json:"tipo"`
-}
-
-type NewProducto struct {
-	ID            *string `json:"id,omitempty"`
-	Nombre        string  `json:"nombre"`
-	Codigo        string  `json:"codigo"`
-	UnidadMedida  string  `json:"unidad_medida"`
-	PrecioEntrada float64 `json:"precio_entrada"`
-	PrecioSalida  float64 `json:"precio_salida"`
-	CategoriaID   string  `json:"categoria_id"`
 }
 
 type NewRol struct {
 	Nombre   string   `json:"nombre"`
 	Permisos []string `json:"permisos"`
-}
-
-type NewTransaccion struct {
-	Tipo        string                   `json:"tipo"`
-	Descripcion string                   `json:"descripcion"`
-	PersonaID   string                   `json:"persona_id"`
-	UsuarioID   string                   `json:"usuario_id"`
-	Detalles    []*NewDetalleTransaccion `json:"detalles"`
-}
-
-type NewUbicacion struct {
-	ID         *string `json:"id,omitempty"`
-	AlmacenID  string  `json:"almacen_id"`
-	ProductoID string  `json:"producto_id"`
-	Cantidad   int     `json:"cantidad"`
 }
 
 type NewUsuario struct {
@@ -99,28 +96,6 @@ type NewUsuario struct {
 	FechaNac  *time.Time `json:"fecha_nac,omitempty"`
 	Domicilio *string    `json:"domicilio,omitempty"`
 	Roles     []string   `json:"roles"`
-}
-
-type Personas struct {
-	ID         string    `json:"id"`
-	Nombres    string    `json:"nombres"`
-	Apellidos  string    `json:"apellidos"`
-	Telefono   string    `json:"telefono"`
-	Correo     string    `json:"correo"`
-	Direccion  string    `json:"direccion"`
-	Tipo       string    `json:"tipo"`
-	Registrado time.Time `json:"registrado"`
-}
-
-type Productos struct {
-	ID            string    `json:"id"`
-	Nombre        string    `json:"nombre"`
-	Codigo        string    `json:"codigo"`
-	UnidadMedida  string    `json:"unidad_medida"`
-	PrecioEntrada float64   `json:"precio_entrada"`
-	PrecioSalida  float64   `json:"precio_salida"`
-	CategoriaID   string    `json:"categoria_id"`
-	Registrado    time.Time `json:"registrado"`
 }
 
 type Rol struct {
@@ -147,23 +122,6 @@ type RolResponse struct {
 type Tokens struct {
 	Username   string    `json:"username"`
 	Token      string    `json:"token"`
-	Registrado time.Time `json:"registrado"`
-}
-
-type Transacciones struct {
-	ID          string    `json:"id"`
-	Tipo        string    `json:"tipo"`
-	Descripcion string    `json:"descripcion"`
-	PersonaID   string    `json:"persona_id"`
-	UsuarioID   string    `json:"usuario_id"`
-	Registrado  time.Time `json:"registrado"`
-}
-
-type Ubicaciones struct {
-	ID         string    `json:"id"`
-	AlmacenID  string    `json:"almacen_id"`
-	ProductoID string    `json:"producto_id"`
-	Cantidad   int       `json:"cantidad"`
 	Registrado time.Time `json:"registrado"`
 }
 
@@ -237,4 +195,41 @@ type UsuariosResponse struct {
 	Estado     bool       `json:"estado"`
 	Dataname   string     `json:"dataname"`
 	Roles      []*Rol     `json:"roles"`
+}
+
+type Vehiculos struct {
+	ID          string    `json:"id"`
+	Placa       string    `json:"placa"`
+	Puertas     int       `json:"puertas"`
+	Capacidad   int       `json:"capacidad"`
+	Descripcion string    `json:"descripcion"`
+	Color       string    `json:"color"`
+	Modelo      string    `json:"modelo"`
+	Anio        int       `json:"anio"`
+	CategoriaID string    `json:"categoria_id"`
+	FotoURL     *string   `json:"foto_url,omitempty"`
+	Estado      bool      `json:"estado"`
+	Registrado  time.Time `json:"registrado"`
+}
+
+type Viajes struct {
+	ID          string    `json:"id"`
+	PasajeroID  string    `json:"pasajero_id"`
+	ConductorID *string   `json:"conductor_id,omitempty"`
+	Estado      bool      `json:"estado"`
+	Descripcion string    `json:"descripcion"`
+	CategoriaID string    `json:"categoria_id"`
+	OrigenLat   float64   `json:"origen_lat"`
+	OrigenLon   float64   `json:"origen_lon"`
+	DestinoLat  *float64  `json:"destino_lat,omitempty"`
+	DestinoLon  *float64  `json:"destino_lon,omitempty"`
+	Registrado  time.Time `json:"registrado"`
+}
+
+type ViajesLocations struct {
+	ID         string    `json:"id"`
+	Latitud    float64   `json:"latitud"`
+	Longitud   float64   `json:"longitud"`
+	ViajeID    string    `json:"viaje_id"`
+	Registrado time.Time `json:"registrado"`
 }

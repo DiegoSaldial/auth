@@ -12,6 +12,12 @@ import (
 	"inventarios/database/auth/usuarios"
 	"inventarios/database/auth/xauth"
 	"inventarios/graph/model"
+	"inventarios/taxis/categoriavehiculos"
+	"inventarios/taxis/conductorvehiculos"
+	"inventarios/taxis/direcciones"
+	"inventarios/taxis/vehiculos"
+	"inventarios/taxis/viajes"
+	"inventarios/taxis/viajeslocations"
 )
 
 // Login is the resolver for the login field.
@@ -69,6 +75,51 @@ func (r *mutationResolver) ModificarRol(ctx context.Context, input model.UpdateR
 	return roles.ModificarRol(r.DB, input)
 }
 
+// CreateUpdateDireccion is the resolver for the createUpdateDireccion field.
+func (r *mutationResolver) CreateUpdateDireccion(ctx context.Context, input model.CreateDirecciones) (*model.Direcciones, error) {
+	return direcciones.Crear(r.DB, input)
+}
+
+// CreateUpdateCategoriaVehiculo is the resolver for the createUpdateCategoriaVehiculo field.
+func (r *mutationResolver) CreateUpdateCategoriaVehiculo(ctx context.Context, input model.CreateCategoriaVehiculos) (*model.CategoriaVehiculos, error) {
+	return categoriavehiculos.Crear(r.DB, input)
+}
+
+// CreateUpdateVehiculo is the resolver for the createUpdateVehiculo field.
+func (r *mutationResolver) CreateUpdateVehiculo(ctx context.Context, input model.CreateVehiculos) (*model.Vehiculos, error) {
+	return vehiculos.Crear(r.DB, input)
+}
+
+// AsignarVehiculo is the resolver for the asignarVehiculo field.
+func (r *mutationResolver) AsignarVehiculo(ctx context.Context, input model.CreateConductorVehiculos) (*model.ConductorVehiculos, error) {
+	return conductorvehiculos.Crear(r.DB, input)
+}
+
+// CreateViaje is the resolver for the createViaje field.
+func (r *mutationResolver) CreateViaje(ctx context.Context, input model.CreateViajes) (*model.Viajes, error) {
+	return viajes.Crear(r.DB, input)
+}
+
+// AceptarViaje is the resolver for the aceptarViaje field.
+func (r *mutationResolver) AceptarViaje(ctx context.Context, viajeID string, usuarioID string) (*model.Viajes, error) {
+	return viajes.AceptarViaje(r.DB, viajeID, usuarioID)
+}
+
+// CancelarViaje is the resolver for the cancelarViaje field.
+func (r *mutationResolver) CancelarViaje(ctx context.Context, id string) (*model.Viajes, error) {
+	return viajes.CancelarViaje(r.DB, id)
+}
+
+// FinalizarViaje is the resolver for the finalizarViaje field.
+func (r *mutationResolver) FinalizarViaje(ctx context.Context, id string) (*model.Viajes, error) {
+	return viajes.FinalizarViaje(r.DB, id)
+}
+
+// SetUbicacionViaje is the resolver for the setUbicacionViaje field.
+func (r *mutationResolver) SetUbicacionViaje(ctx context.Context, input model.CreateViajesLocations) (*model.ViajesLocations, error) {
+	return viajeslocations.SetUbicacion(r.DB, input)
+}
+
 // UsuarioByUsername is the resolver for the usuarioByUsername field.
 func (r *queryResolver) UsuarioByUsername(ctx context.Context, username string) (*model.UsuariosResponse, error) {
 	data, err := xauth.CtxValue(ctx, r.DB, "usuarioByUsername")
@@ -112,6 +163,61 @@ func (r *queryResolver) PermisosByRol(ctx context.Context, rolID string) ([]*mod
 		return nil, errors.New(err.Error())
 	}
 	return rolpermiso.PermisosByRol(r.DB, rolID)
+}
+
+// DireccionesByUsuario is the resolver for the direccionesByUsuario field.
+func (r *queryResolver) DireccionesByUsuario(ctx context.Context, usuarioID string) ([]*model.Direcciones, error) {
+	return direcciones.GetByUsuario(r.DB, usuarioID)
+}
+
+// CategoriaVehiculos is the resolver for the categoria_vehiculos field.
+func (r *queryResolver) CategoriaVehiculos(ctx context.Context) ([]*model.CategoriaVehiculos, error) {
+	return categoriavehiculos.Listar(r.DB)
+}
+
+// Vehiculos is the resolver for the vehiculos field.
+func (r *queryResolver) Vehiculos(ctx context.Context) ([]*model.Vehiculos, error) {
+	return vehiculos.Listar(r.DB)
+}
+
+// VehiculosByCategoria is the resolver for the vehiculosByCategoria field.
+func (r *queryResolver) VehiculosByCategoria(ctx context.Context, categoriaID string) ([]*model.Vehiculos, error) {
+	return vehiculos.ListarByCategoria(r.DB, categoriaID)
+}
+
+// VehiculosByConductor is the resolver for the vehiculosByConductor field.
+func (r *queryResolver) VehiculosByConductor(ctx context.Context, usuarioID string) ([]*model.Vehiculos, error) {
+	return vehiculos.ListarByConductor(r.DB, usuarioID)
+}
+
+// ConductoresByVehiculo is the resolver for the conductoresByVehiculo field.
+func (r *queryResolver) ConductoresByVehiculo(ctx context.Context, vehiculoID string) ([]*model.UsuariosResponse, error) {
+	return conductorvehiculos.UsuariosByVehiculo(r.DB, vehiculoID)
+}
+
+// ViajesCercanos is the resolver for the viajesCercanos field.
+func (r *queryResolver) ViajesCercanos(ctx context.Context, lat float64, lon float64, radioMts int) ([]*model.Viajes, error) {
+	return viajes.ListarByRadio(r.DB, lat, lon, radioMts)
+}
+
+// ViajesByUsuario is the resolver for the viajesByUsuario field.
+func (r *queryResolver) ViajesByUsuario(ctx context.Context, usuarioID string) ([]*model.Viajes, error) {
+	return viajes.ListarByUsuario(r.DB, usuarioID)
+}
+
+// ViajesByPasajero is the resolver for the viajesByPasajero field.
+func (r *queryResolver) ViajesByPasajero(ctx context.Context, usuarioID string) ([]*model.Viajes, error) {
+	return viajes.ListarByPasajero(r.DB, usuarioID)
+}
+
+// ViajesByConductor is the resolver for the viajesByConductor field.
+func (r *queryResolver) ViajesByConductor(ctx context.Context, usuarioID string) ([]*model.Viajes, error) {
+	return viajes.ListarByConductor(r.DB, usuarioID)
+}
+
+// ViajesByCategoria is the resolver for the viajesByCategoria field.
+func (r *queryResolver) ViajesByCategoria(ctx context.Context, categoriaID string) ([]*model.Viajes, error) {
+	return viajes.ListarByCategoria(r.DB, categoriaID)
 }
 
 // Mutation returns MutationResolver implementation.

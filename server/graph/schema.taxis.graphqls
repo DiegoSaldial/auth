@@ -1,0 +1,127 @@
+# scalar Time 
+
+type Direcciones {
+    id: ID!
+    nombre: String!
+    descripcion: String!
+    latitud: Float!
+    longitud: Float!
+    estado: Boolean!
+    usuario_id: ID!
+    registrado: Time!
+}
+
+type CategoriaVehiculos {
+    id: ID!
+    nombre: String!
+    descripcion: String! 
+}
+
+type Vehiculos {
+    id: ID!
+    placa: String!
+    puertas: Int!
+    capacidad: Int!
+    descripcion: String!
+    color: String!
+    modelo: String!
+    anio: Int!
+    categoria_id: ID!
+    foto_url: String
+    estado: Boolean! 
+    registrado: Time!
+}
+
+type ConductorVehiculos {
+    usuario_id: ID!
+    vehiculo_id: ID!
+    estado: Boolean! 
+    registrado: Time!
+}
+
+type Viajes {
+    id: ID!
+    pasajero_id: ID!
+    conductor_id: ID
+    estado: Boolean!
+    descripcion: String!
+    categoria_id: ID!
+    origen_lat: Float!
+    origen_lon: Float!
+    destino_lat: Float
+    destino_lon: Float
+    registrado: Time!
+}
+
+type ViajesLocations {
+    id: ID!
+    latitud: Float!
+    longitud: Float!
+    viaje_id: ID! 
+    registrado: Time!
+}
+
+# ============================================================
+# ============================================================
+# ============================================================
+
+input CreateDirecciones {
+    id: ID
+    nombre: String!
+    descripcion: String!
+    latitud: Float!
+    longitud: Float! 
+    usuario_id: ID! 
+}
+
+input CreateCategoriaVehiculos {
+    id: ID
+    nombre: String!
+    descripcion: String! 
+}
+
+input CreateVehiculos {
+    id: ID
+    placa: String!
+    puertas: Int!
+    capacidad: Int!
+    descripcion: String!
+    color: String!
+    modelo: String!
+    anio: Int!
+    categoria_id: ID!
+    foto_url: String 
+}
+
+input CreateConductorVehiculos {
+    usuario_id: ID!
+    vehiculo_id: ID! 
+}
+
+
+input CreateViajes { 
+    pasajero_id: ID!
+    descripcion: String!
+    categoria_id: ID!
+    origen_lat: Float!
+    origen_lon: Float!
+    destino_lat: Float
+    destino_lon: Float
+}
+
+input CreateViajesLocations {
+    viaje_id: ID!
+    latitud: Float!
+    longitud: Float!
+}
+
+# ============================================================
+# ============================================================
+# ============================================================
+# ============================================================
+# ============================================================
+# ============================================================
+# ============================================================
+# ============================================================
+
+
