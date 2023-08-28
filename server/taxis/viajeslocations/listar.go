@@ -3,7 +3,7 @@ package viajeslocations
 import (
 	"database/sql"
 	"errors"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func GetById(db *sql.DB, id string) (*model.ViajesLocations, error) {

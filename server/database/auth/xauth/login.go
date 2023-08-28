@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"inventarios/database/auth/tokens"
-	"inventarios/graph/model"
 	"os"
 	"strconv"
+	"taxis/database/auth/tokens"
+	"taxis/graph/model"
 )
 
 func Login(ctx context.Context, db *sql.DB, u string, p string) ([]*model.Rol, error) {

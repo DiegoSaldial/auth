@@ -2,8 +2,8 @@ package roles
 
 import (
 	"database/sql"
-	"inventarios/database/auth/rolpermiso"
-	"inventarios/graph/model"
+	"taxis/database/auth/rolpermiso"
+	"taxis/graph/model"
 )
 
 func GetById(db *sql.DB, id string) (*model.Rol, error) {

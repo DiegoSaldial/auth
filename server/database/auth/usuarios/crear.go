@@ -3,8 +3,8 @@ package usuarios
 import (
 	"database/sql"
 	"fmt"
-	"inventarios/graph/model"
 	"strings"
+	"taxis/graph/model"
 )
 
 func CreateUsuario(db *sql.DB, input model.NewUsuario) (*model.Usuario, error) {

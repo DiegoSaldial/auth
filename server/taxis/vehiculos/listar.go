@@ -3,7 +3,7 @@ package vehiculos
 import (
 	"database/sql"
 	"errors"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func Listar(db *sql.DB) ([]*model.Vehiculos, error) {

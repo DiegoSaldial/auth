@@ -2,7 +2,7 @@ package vehiculos
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func actualizar(db *sql.DB, input model.CreateVehiculos) (*model.Vehiculos, error) {

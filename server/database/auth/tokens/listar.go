@@ -2,7 +2,7 @@ package tokens
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func GetToken(db *sql.DB, username string) *model.Tokens {

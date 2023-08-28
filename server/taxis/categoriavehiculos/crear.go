@@ -2,8 +2,8 @@ package categoriavehiculos
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
 	"strconv"
+	"taxis/graph/model"
 )
 
 func Crear(db *sql.DB, input model.CreateCategoriaVehiculos) (*model.CategoriaVehiculos, error) {

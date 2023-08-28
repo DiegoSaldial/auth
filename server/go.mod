@@ -1,4 +1,4 @@
-module inventarios
+module taxis
 
 go 1.21.0
 

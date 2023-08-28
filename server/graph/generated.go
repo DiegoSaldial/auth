@@ -8,7 +8,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"

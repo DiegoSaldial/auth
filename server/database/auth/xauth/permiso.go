@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"inventarios/database/auth/roles"
 	"strconv"
+	"taxis/database/auth/roles"
 )
 
 func CheckPermiso(db *sql.DB, metodo string, rolid int, rol string) error {

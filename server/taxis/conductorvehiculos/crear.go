@@ -2,7 +2,7 @@ package conductorvehiculos
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func Crear(db *sql.DB, input model.CreateConductorVehiculos) (*model.ConductorVehiculos, error) {

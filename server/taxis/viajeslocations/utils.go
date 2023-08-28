@@ -2,7 +2,7 @@ package viajeslocations
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func parse(row *sql.Row, t *model.ViajesLocations) error {

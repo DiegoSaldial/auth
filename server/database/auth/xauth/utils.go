@@ -7,9 +7,9 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"fmt"
-	"inventarios/graph/model"
 	"io"
 	"os"
+	"taxis/graph/model"
 )
 
 func parse(rows *sql.Rows, t *model.UsuarioLogin) error {

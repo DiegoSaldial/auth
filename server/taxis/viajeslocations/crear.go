@@ -2,8 +2,8 @@ package viajeslocations
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
 	"strconv"
+	"taxis/graph/model"
 )
 
 func SetUbicacion(db *sql.DB, input model.CreateViajesLocations) (*model.ViajesLocations, error) {

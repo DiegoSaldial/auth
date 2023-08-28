@@ -7,17 +7,17 @@ package graph
 import (
 	"context"
 	"errors"
-	"inventarios/database/auth/roles"
-	"inventarios/database/auth/rolpermiso"
-	"inventarios/database/auth/usuarios"
-	"inventarios/database/auth/xauth"
-	"inventarios/graph/model"
-	"inventarios/taxis/categoriavehiculos"
-	"inventarios/taxis/conductorvehiculos"
-	"inventarios/taxis/direcciones"
-	"inventarios/taxis/vehiculos"
-	"inventarios/taxis/viajes"
-	"inventarios/taxis/viajeslocations"
+	"taxis/database/auth/roles"
+	"taxis/database/auth/rolpermiso"
+	"taxis/database/auth/usuarios"
+	"taxis/database/auth/xauth"
+	"taxis/graph/model"
+	"taxis/taxis/categoriavehiculos"
+	"taxis/taxis/conductorvehiculos"
+	"taxis/taxis/direcciones"
+	"taxis/taxis/vehiculos"
+	"taxis/taxis/viajes"
+	"taxis/taxis/viajeslocations"
 )
 
 // Login is the resolver for the login field.

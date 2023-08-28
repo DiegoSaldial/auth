@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"inventarios/graph/model"
 	"strings"
+	"taxis/graph/model"
 )
 
 func UpdateUsuario(db *sql.DB, input model.UpdateUsuario) (*model.Usuario, error) {

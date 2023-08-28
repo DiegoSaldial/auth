@@ -3,7 +3,7 @@ package usuarios
 import (
 	"database/sql"
 	"errors"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func usuarioByUname(db *sql.DB, username string) (*model.Usuario, error) {

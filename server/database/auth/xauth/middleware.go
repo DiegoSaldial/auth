@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"inventarios/database/auth/tokens"
 	"net/http"
 	"os"
 	"strings"
+	"taxis/database/auth/tokens"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"

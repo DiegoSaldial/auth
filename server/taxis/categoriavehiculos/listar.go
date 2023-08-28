@@ -3,7 +3,7 @@ package categoriavehiculos
 import (
 	"database/sql"
 	"errors"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func GetById(db *sql.DB, id string) (*model.CategoriaVehiculos, error) {

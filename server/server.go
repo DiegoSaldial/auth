@@ -3,11 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"inventarios/database/auth/xauth"
-	"inventarios/graph"
 	"log"
 	"net/http"
 	"os"
+	"taxis/database/auth/xauth"
+	"taxis/graph"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"

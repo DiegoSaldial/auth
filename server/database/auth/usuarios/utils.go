@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"inventarios/graph/model"
 	"strings"
+	"taxis/graph/model"
 )
 
 func parseRow(row *sql.Row, t *model.Usuario) error {

@@ -2,7 +2,7 @@ package viajes
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func AceptarViaje(db *sql.DB, viaje_id, usuario_id string) (*model.Viajes, error) {

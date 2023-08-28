@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"inventarios/graph/model"
 	"strings"
+	"taxis/graph/model"
 )
 
 func parse(rows *sql.Rows, t *model.RolPermiso) error {

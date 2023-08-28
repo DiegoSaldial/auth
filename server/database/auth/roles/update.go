@@ -3,7 +3,7 @@ package roles
 import (
 	"database/sql"
 	"errors"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func ModificarRol(db *sql.DB, input model.UpdateRol) (*model.Rol, error) {

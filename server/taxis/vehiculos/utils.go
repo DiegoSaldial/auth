@@ -2,7 +2,7 @@ package vehiculos
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func parse(rows *sql.Rows, t *model.Vehiculos) error {

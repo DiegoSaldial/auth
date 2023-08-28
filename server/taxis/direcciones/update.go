@@ -2,7 +2,7 @@ package direcciones
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func actualizar(db *sql.DB, input model.CreateDirecciones) (*model.Direcciones, error) {

@@ -2,8 +2,8 @@ package rolpermiso
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
 	"strings"
+	"taxis/graph/model"
 )
 
 func ActualizarOnRolCreated(db *sql.Tx, permissions []*model.RolPermiso) error {

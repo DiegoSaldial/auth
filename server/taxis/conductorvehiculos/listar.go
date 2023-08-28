@@ -3,7 +3,7 @@ package conductorvehiculos
 import (
 	"database/sql"
 	"errors"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func GetByUsuVehiculo(db *sql.DB, usuario, vehiculo string) (*model.ConductorVehiculos, error) {

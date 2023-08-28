@@ -3,7 +3,7 @@ package viajes
 import (
 	"database/sql"
 	"errors"
-	"inventarios/graph/model"
+	"taxis/graph/model"
 )
 
 func ListarByRadio(db *sql.DB, lat, lon float64, radio int) ([]*model.Viajes, error) {

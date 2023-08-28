@@ -2,8 +2,8 @@ package roles
 
 import (
 	"database/sql"
-	"inventarios/graph/model"
 	"strconv"
+	"taxis/graph/model"
 )
 
 func CreateRol(db *sql.DB, input model.NewRol) (*model.Rol, error) {
