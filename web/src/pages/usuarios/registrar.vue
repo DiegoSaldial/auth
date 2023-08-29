@@ -65,6 +65,11 @@
             ]" />
         </div>
 
+        <div class="col-xs-12 col-sm-6 col-md3 q-px-md">
+          <q-file outlined v-model="base64a" label="Foto:" dense accept="image/*" clearable lazy-rules
+            :disable="store.is_loading_page" @update:model-value="onFileChange" :rules="rulesfile" />
+        </div>
+
         <div class="col-xs-12 col-sm-6 q-px-md">
           <q-table title="Roles del usuario:" :loading="loading" :rows="roles" :columns="columns" row-key="name"
             hide-pagination :rows-per-page-options="[0]" :filter="filter" class="q-mx-md">
@@ -92,7 +97,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { pageStore } from '../../stores/pageStore';
 import { RolesResponseCustom } from '../../types/roles';
 import { useRoute, useRouter } from 'vue-router';
@@ -187,12 +192,37 @@ export default {
         console.log(res);
         if (res.createUsuario) router.back()
       }
-
     }
+
+    const rulesfile = computed(() => {
+      return [
+        (v: any) => {
+          if (id.value) return true;
+          if (input.value.foto_url) return true;
+          return (v && v.name.length > 0) || 'Dato requerido.';
+        },
+      ];
+    });
+
+    const onFileChange = (file: any) => {
+      if (!file) {
+        input.value.foto_url = '';
+        return;
+      }
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        input.value.foto_url = '' + reader.result;
+      };
+      reader.onerror = function (err) {
+        console.log('Error:', err);
+      };
+    };
 
     onBeforeUnmount(() => resetInstanciaNew())
 
     onMounted(async () => {
+      input.value.foto_url = '';
       loading.value = true;
       id.value = route.query.iduser;
       const res = await roleservice.roles(false).then((e) => e).catch((e) => e);
@@ -228,9 +258,12 @@ export default {
       input,
       columns,
       roles,
+      base64a: ref(null),
+      rulesfile,
       generateUser,
       generatePass,
       onSubmit,
+      onFileChange,
     };
   },
 };
