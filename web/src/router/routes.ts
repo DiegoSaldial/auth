@@ -72,6 +72,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/pagestaxis/vehiculos/quitarConductor.vue'),
       },
       {
+        path: 'vehiculos/ver',
+        component: () => import('pages/pagestaxis/vehiculos/ver.vue'),
+      },
+      {
         path: 'conductores/',
         component: () => import('pages/pagestaxis/conductores/index.vue'),
       },

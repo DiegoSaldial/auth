@@ -38,12 +38,12 @@
           <q-btn color="green-10" square flat icon="more_vert" size="small">
             <q-menu anchor="top right" self="top left">
               <q-list style="min-width: 110px">
-                <!-- <q-item clickable v-ripple :to="'/adm/vehiculos/ver?username=' + props.row.username">
+                <q-item clickable v-ripple :to="'/adm/vehiculos/ver?id=' + props.row.id">
                   <q-item-section avatar>
                     <q-icon color="primary" name="visibility" right />
                   </q-item-section>
                   <q-item-section>Mostrar</q-item-section>
-                </q-item> -->
+                </q-item>
 
                 <q-item clickable v-ripple
                   :to="'/adm/vehiculos/registrar?id=' + props.row.id">

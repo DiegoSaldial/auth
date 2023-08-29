@@ -15,6 +15,12 @@
         </q-btn-group> -->
       </template>
 
+      <template v-slot:body-cell-foto_url="props">
+        <q-td :props="props">
+          <q-img :src="props.row.foto_url" spinner-color="purple" style="height: 50px; max-width: 50px"/>
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-estado="props">
         <q-td :props="props">
           {{ props.row.estado?'activo':'inactivo' }}
@@ -69,6 +75,7 @@ import { pageStore } from '../../../stores/pageStore';
 import { UsuariosResponse } from '../../../types/taxis/personas';
 const columns = [
   { name: 'id', label: 'ID', field: 'id', sortable: true },
+  { name: 'foto_url', label: 'foto_url', field: 'foto_url', sortable: false },
   { name: 'nombres', label: 'nombres', field: 'nombres', sortable: true },
   { name: 'apellidos', label: 'apellidos', field: 'apellidos', sortable: true },
   { name: 'username', label: 'username', field: 'username', sortable: true },
