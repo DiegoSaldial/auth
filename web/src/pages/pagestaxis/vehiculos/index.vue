@@ -15,6 +15,12 @@
         </q-btn-group>
       </template>
 
+      <template v-slot:body-cell-foto_url="props">
+        <q-td :props="props">
+          <q-img :src="props.row.foto_url" spinner-color="purple" style="height: 50px; max-width: 50px"/>
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-estado="props">
         <q-td :props="props">
           {{ props.row.estado?'activo':'inactivo' }}
@@ -76,6 +82,7 @@ import { pageStore } from '../../../stores/pageStore';
 import { CategoriaVehiculosResponse } from '../../../types/taxis/categoria_vehiculos';
 const columns = [
   { name: 'id', label: 'ID', field: 'id', sortable: true },
+  { name: 'foto_url', label: 'foto_url', field: 'foto_url', sortable: false },
   { name: 'placa', label: 'placa', field: 'placa', sortable: true },
   { name: 'puertas', label: 'puertas', field: 'puertas', sortable: true },
   { name: 'capacidad', label: 'capacidad', field: 'capacidad', sortable: true },

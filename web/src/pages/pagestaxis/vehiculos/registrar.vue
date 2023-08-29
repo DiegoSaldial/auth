@@ -54,6 +54,11 @@
           </q-select>
         </div>
 
+        <div class="col-xs-12 col-sm-6 col-md3">
+          <q-file outlined v-model="base64a" label="Foto:" dense accept="image/*" clearable lazy-rules
+                :disable="store.is_loading_page" @update:model-value="onFileChange" :rules="rulesfile" />
+        </div>
+
         <div class="col-xs-12 col-sm-6">
           <q-input v-model.trim="input.descripcion" outlined label="descripcion:" lazy-rules dense type="textarea" :rules="[
             (v) => (v && v.length > 0) || 'Dato requerido.',
@@ -72,8 +77,9 @@
   </div>
 </template>
 
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Atras from '../../utils/header-back.vue';
 import CategoriaVServices from '../../../services/taxis/categoria_vehiculos';
@@ -113,7 +119,33 @@ export default {
       if (res.createUpdateVehiculo) router.back();
     }
 
+    const onFileChange = (file: any) => {
+      if (!file) {
+        input.value.foto_url = '';
+        return;
+      }
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        input.value.foto_url = '' + reader.result;
+      };
+      reader.onerror = function (err) {
+        console.log('Error:', err);
+      };
+    };
+
+    const rulesfile = computed(() => {
+      return [
+        (v: any) => {
+          if (id.value) return true;
+          if (input.value.foto_url) return true;
+          return (v && v.name.length > 0) || 'Dato requerido.';
+        },
+      ];
+    });
+
     onMounted(async () => {
+      input.value.foto_url = '';
       loading.value = true;
       id.value = route.query.id;
       const cvs = await categoriaVServices.categoria_vehiculos().then((e) => e).catch((e) => e);
@@ -131,11 +163,14 @@ export default {
     return {
       store,
       loading,
-      filter: ref(''),
       id,
       input,
       categorias,
+      rulesfile,
+      filter: ref(''),
+      base64a: ref(null),
       onSubmit,
+      onFileChange,
     };
   },
 };
