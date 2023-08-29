@@ -65,7 +65,7 @@
             ]" />
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md3">
+        <div class="col-xs-12 col-sm-6 col-md3 q-px-md">
           <q-file outlined v-model="base64a" label="Foto:" dense accept="image/*" clearable lazy-rules
             :disable="store.is_loading_page" @update:model-value="onFileChange" :rules="rulesfile" />
         </div>
