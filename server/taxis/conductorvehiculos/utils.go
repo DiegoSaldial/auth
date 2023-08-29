@@ -46,3 +46,17 @@ func findUsuarioByID(usuarios []*model.UsuariosResponse, targetID string) *model
 	}
 	return nil
 }
+
+func checkExiste(db *sql.DB, usuario, vehiculo string) bool {
+	existe := 0
+	sql := `select count(usuario_id) from conductor_vehiculos where usuario_id = ? and vehiculo_id = ?`
+	db.QueryRow(sql, usuario, vehiculo).Scan(&existe)
+	return existe > 0
+}
+
+func hayOtrosActivos(db *sql.DB, usuario string) int {
+	existe := 0
+	sql := `select count(usuario_id) from conductor_vehiculos where estado=1 && usuario_id = ?`
+	db.QueryRow(sql, usuario).Scan(&existe)
+	return existe
+}

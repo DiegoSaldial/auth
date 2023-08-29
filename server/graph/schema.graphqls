@@ -143,25 +143,33 @@ type Query {
   """ Retorna las direcciones asociadas a un usuario """
     direccionesByUsuario(usuario_id:ID!): [Direcciones!]!
     """ Retorna las categoias de vehiculos disponibles """
-    categoria_vehiculos: [CategoriaVehiculos!]!
+    categoria_vehiculos: [CategoriaVehiculosResponse!]!
+    """ Retorna una categoria """
+    categoria_vehiculo(id:ID!): CategoriaVehiculosResponse!
     """ Retorna los vehiculos registrados """
-    vehiculos: [Vehiculos!]! 
+    vehiculos: [VehiculosResponse!]! 
+    """ Retorna los vehiculos registrados """
+    vehiculo(id:ID!): VehiculosResponse! 
     """ Retorna los vehiculos por categoria """
-    vehiculosByCategoria(categoria_id:ID!): [Vehiculos!]!
+    vehiculosByCategoria(categoria_id:ID!): [VehiculosResponse!]!
     """ Retorna vehiculos asociados a un conductor """
-    vehiculosByConductor(usuario_id:ID!): [Vehiculos!]!
+    vehiculosByConductor(usuario_id:ID!): [VehiculosResponse!]!
     """ Retorna los usuarios asignados a un vehiculo """
     conductoresByVehiculo(vehiculo_id:ID!): [UsuariosResponse!]!
+    """ Retorna los usuarios asignados como conductores """
+    conductores: [UsuariosResponse!]!
+    """ Retorna los usuarios asignados como conductores """
+    clientes: [UsuariosResponse!]!
     """ Retorna las solicitudes de viajes disponibles dentro de un radio seleccionado """
-    viajesCercanos(lat:Float!,lon:Float!,radioMts:Int!): [Viajes!]!
+    viajesCercanos(lat:Float!,lon:Float!,radioMts:Int!): [ViajesResponse!]!
     """ Retorna los viajes de un usuario """
-    viajesByUsuario(usuario_id:ID!): [Viajes!]!
+    viajesByUsuario(usuario_id:ID!): [ViajesResponse!]!
     """ Retorna los viajes de un usuario que haya solicitado un vehiculo """
-    viajesByPasajero(usuario_id:ID!): [Viajes!]!
+    viajesByPasajero(usuario_id:ID!): [ViajesResponse!]!
     """ Retorna los viajes de un usuario que haya aceptado el viaje """
-    viajesByConductor(usuario_id:ID!): [Viajes!]!
+    viajesByConductor(usuario_id:ID!): [ViajesResponse!]!
     """ Retorna los viajes segun la categoria """
-    viajesByCategoria(categoria_id:ID!): [Viajes!]!
+    viajesByCategoria(categoria_id:ID!): [ViajesResponse!]!
 }
 
 
@@ -198,19 +206,21 @@ type Mutation {
   """ Crea una direccion, si se pasa el id lo actualiza """
     createUpdateDireccion(input:CreateDirecciones!): Direcciones!
     """ Crea una categoria de vehiculo, si se pasa el id lo actualiza"""
-    createUpdateCategoriaVehiculo(input:CreateCategoriaVehiculos!): CategoriaVehiculos!
+    createUpdateCategoriaVehiculo(input:CreateCategoriaVehiculos!): CategoriaVehiculosResponse!
     """ Crea un vehiculo si se pasa el id lo actualiza"""
-    createUpdateVehiculo(input:CreateVehiculos!): Vehiculos!
+    createUpdateVehiculo(input:CreateVehiculos!): VehiculosResponse!
     """ Crea un registro con el vehiculo y usuario asignado como conductor """
     asignarVehiculo(input:CreateConductorVehiculos!): ConductorVehiculos!
+    """ desvincula a un conductor del vehiculo """
+    quitarVehiculo(input:CreateConductorVehiculos!): Boolean!
     """ Crea un nuevo viaje que va estar disponible para los conductores """
-    createViaje(input:CreateViajes!): Viajes!
+    createViaje(input:CreateViajes!): ViajesResponse!
     """ Crea un registro con el conductor que acepta el viaje"""
-    aceptarViaje(viaje_id:ID!,usuario_id:ID!): Viajes!
+    aceptarViaje(viaje_id:ID!,usuario_id:ID!): ViajesResponse!
     """ El conductor cancela el viaje, se elimina el id conductor del viaje y queda libre para otro conductor """
-    cancelarViaje(id:ID!): Viajes!
+    cancelarViaje(id:ID!): ViajesResponse!
     """ El pasajero finaliza el viaje, marcando el estado a false y nadie puede aceptar el viaje """
-    finalizarViaje(id:ID!): Viajes!
+    finalizarViaje(id:ID!): ViajesResponse!
     """ Crea un registro de la ubicacion actual del viaje """
     setUbicacionViaje(input:CreateViajesLocations!): ViajesLocations!
 }

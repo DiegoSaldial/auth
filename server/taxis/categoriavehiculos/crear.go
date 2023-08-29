@@ -6,7 +6,7 @@ import (
 	"taxis/graph/model"
 )
 
-func Crear(db *sql.DB, input model.CreateCategoriaVehiculos) (*model.CategoriaVehiculos, error) {
+func Crear(db *sql.DB, input model.CreateCategoriaVehiculos) (*model.CategoriaVehiculosResponse, error) {
 	if input.ID != nil {
 		return actualizar(db, input)
 	}

@@ -6,10 +6,11 @@ import (
 	"time"
 )
 
-type CategoriaVehiculos struct {
+type CategoriaVehiculosResponse struct {
 	ID          string `json:"id"`
 	Nombre      string `json:"nombre"`
 	Descripcion string `json:"descripcion"`
+	Vehiculos   int    `json:"vehiculos"`
 }
 
 type ConductorVehiculos struct {
@@ -197,33 +198,23 @@ type UsuariosResponse struct {
 	Roles      []*Rol     `json:"roles"`
 }
 
-type Vehiculos struct {
-	ID          string    `json:"id"`
-	Placa       string    `json:"placa"`
-	Puertas     int       `json:"puertas"`
-	Capacidad   int       `json:"capacidad"`
-	Descripcion string    `json:"descripcion"`
-	Color       string    `json:"color"`
-	Modelo      string    `json:"modelo"`
-	Anio        int       `json:"anio"`
-	CategoriaID string    `json:"categoria_id"`
-	FotoURL     *string   `json:"foto_url,omitempty"`
-	Estado      bool      `json:"estado"`
-	Registrado  time.Time `json:"registrado"`
-}
-
-type Viajes struct {
-	ID          string    `json:"id"`
-	PasajeroID  string    `json:"pasajero_id"`
-	ConductorID *string   `json:"conductor_id,omitempty"`
-	Estado      bool      `json:"estado"`
-	Descripcion string    `json:"descripcion"`
-	CategoriaID string    `json:"categoria_id"`
-	OrigenLat   float64   `json:"origen_lat"`
-	OrigenLon   float64   `json:"origen_lon"`
-	DestinoLat  *float64  `json:"destino_lat,omitempty"`
-	DestinoLon  *float64  `json:"destino_lon,omitempty"`
-	Registrado  time.Time `json:"registrado"`
+type VehiculosResponse struct {
+	ID                      string    `json:"id"`
+	Placa                   string    `json:"placa"`
+	Puertas                 int       `json:"puertas"`
+	Capacidad               int       `json:"capacidad"`
+	Descripcion             string    `json:"descripcion"`
+	Color                   string    `json:"color"`
+	Modelo                  string    `json:"modelo"`
+	Anio                    int       `json:"anio"`
+	CategoriaID             string    `json:"categoria_id"`
+	FotoURL                 *string   `json:"foto_url,omitempty"`
+	Estado                  bool      `json:"estado"`
+	Registrado              time.Time `json:"registrado"`
+	ConductorID             *string   `json:"conductor_id,omitempty"`
+	Conductor               *string   `json:"conductor,omitempty"`
+	Categoria               string    `json:"categoria"`
+	EstadoConductorVehiculo *bool     `json:"estado_conductor_vehiculo,omitempty"`
 }
 
 type ViajesLocations struct {
@@ -232,4 +223,20 @@ type ViajesLocations struct {
 	Longitud   float64   `json:"longitud"`
 	ViajeID    string    `json:"viaje_id"`
 	Registrado time.Time `json:"registrado"`
+}
+
+type ViajesResponse struct {
+	ID                string    `json:"id"`
+	PasajeroID        string    `json:"pasajero_id"`
+	ConductorID       *string   `json:"conductor_id,omitempty"`
+	Estado            bool      `json:"estado"`
+	Descripcion       string    `json:"descripcion"`
+	CategoriaID       string    `json:"categoria_id"`
+	OrigenLat         float64   `json:"origen_lat"`
+	OrigenLon         float64   `json:"origen_lon"`
+	DestinoLat        *float64  `json:"destino_lat,omitempty"`
+	DestinoLon        *float64  `json:"destino_lon,omitempty"`
+	Registrado        time.Time `json:"registrado"`
+	PasajeroUsername  string    `json:"pasajero_username"`
+	ConductorUsername *string   `json:"conductor_username,omitempty"`
 }

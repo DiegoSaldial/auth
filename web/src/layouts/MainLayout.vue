@@ -43,6 +43,8 @@
           </q-item-label>
 
           <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+          <q-separator inset></q-separator>
+          <EssentialLink v-for="link in listApp" :key="link.title" v-bind="link" />
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -62,6 +64,12 @@ import { useRouter } from 'vue-router';
 
 const linksList = [
   {
+    title: 'Inicio',
+    caption: 'Pagina principal',
+    icon: 'home',
+    link: '/adm',
+  },
+  {
     title: 'Usuarios',
     caption: 'Controlar de acceso al sistema',
     icon: 'group',
@@ -73,8 +81,40 @@ const linksList = [
     icon: 'groups',
     link: '/adm/roles',
   },
-
 ];
+
+const listApp = [
+{
+    title: 'Categorias Veh.',
+    caption: 'Categoria de vehiculos',
+    icon: 'category',
+    link: '/adm/categorias_vehiculos',
+  },
+  {
+    title: 'Vehiculos',
+    caption: 'Vehiculos registrados en el sistema',
+    icon: 'local_taxi',
+    link: '/adm/vehiculos',
+  },
+  {
+    title: 'Conductores',
+    caption: 'Viajes solicitados por los clientes',
+    icon: 'psychology',
+    link: '/adm/conductores',
+  },
+  {
+    title: 'Clientes',
+    caption: 'Viajes solicitados por los clientes',
+    icon: 'diversity_3',
+    link: '/adm/clientes',
+  },
+  {
+    title: 'Viajes',
+    caption: 'Viajes solicitados por los clientes',
+    icon: 'hail',
+    link: '/adm/viajes',
+  },
+]
 
 export default defineComponent({
   name: 'MainLayout',
@@ -101,6 +141,7 @@ export default defineComponent({
     return {
       store,
       essentialLinks: linksList,
+      listApp: listApp,
       leftDrawerOpen,
       datalogin,
       logout,

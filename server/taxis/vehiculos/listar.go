@@ -6,17 +6,17 @@ import (
 	"taxis/graph/model"
 )
 
-func Listar(db *sql.DB) ([]*model.Vehiculos, error) {
-	sql := `select id,placa,puertas,capacidad,descripcion,color,modelo,anio,categoria_id,foto_url,estado,registrado from vehiculos`
+func Listar(db *sql.DB) ([]*model.VehiculosResponse, error) {
+	sql := getSqlListar()
 	res, err := db.Query(sql)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Close()
 
-	vs := []*model.Vehiculos{}
+	vs := []*model.VehiculosResponse{}
 	for res.Next() {
-		v := model.Vehiculos{}
+		v := model.VehiculosResponse{}
 		er := parse(res, &v)
 		if er != nil {
 			return nil, er
@@ -26,13 +26,13 @@ func Listar(db *sql.DB) ([]*model.Vehiculos, error) {
 	return vs, nil
 }
 
-func GetById(db *sql.DB, id string) (*model.Vehiculos, error) {
-	sql := `select id,placa,puertas,capacidad,descripcion,color,modelo,anio,categoria_id,foto_url,estado,registrado from vehiculos where id=?`
+func GetById(db *sql.DB, id string) (*model.VehiculosResponse, error) {
+	sql := getSqlByID()
 	row := db.QueryRow(sql, id)
 	if row == nil {
 		return nil, errors.New("no existe vehiculo")
 	}
-	v := model.Vehiculos{}
+	v := model.VehiculosResponse{}
 	er := parse2(row, &v)
 	if er != nil {
 		return nil, er
@@ -40,17 +40,17 @@ func GetById(db *sql.DB, id string) (*model.Vehiculos, error) {
 	return &v, nil
 }
 
-func ListarByCategoria(db *sql.DB, cate string) ([]*model.Vehiculos, error) {
-	sql := `select id,placa,puertas,capacidad,descripcion,color,modelo,anio,categoria_id,foto_url,estado,registrado from vehiculos where categoria_id=?`
+func ListarByCategoria(db *sql.DB, cate string) ([]*model.VehiculosResponse, error) {
+	sql := getSqlByCategoria()
 	res, err := db.Query(sql, cate)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Close()
 
-	vs := []*model.Vehiculos{}
+	vs := []*model.VehiculosResponse{}
 	for res.Next() {
-		v := model.Vehiculos{}
+		v := model.VehiculosResponse{}
 		er := parse(res, &v)
 		if er != nil {
 			return nil, er
@@ -60,20 +60,17 @@ func ListarByCategoria(db *sql.DB, cate string) ([]*model.Vehiculos, error) {
 	return vs, nil
 }
 
-func ListarByConductor(db *sql.DB, userid string) ([]*model.Vehiculos, error) {
-	sql := `
-	select id,placa,puertas,capacidad,descripcion,color,modelo,anio,categoria_id,foto_url,estado,registrado 
-	from vehiculos 
-	where id in(select vehiculo_id from conductor_vehiculos where usuario_id=?)`
+func ListarByConductor(db *sql.DB, userid string) ([]*model.VehiculosResponse, error) {
+	sql := getSqlByConductor()
 	res, err := db.Query(sql, userid)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Close()
 
-	vs := []*model.Vehiculos{}
+	vs := []*model.VehiculosResponse{}
 	for res.Next() {
-		v := model.Vehiculos{}
+		v := model.VehiculosResponse{}
 		er := parse(res, &v)
 		if er != nil {
 			return nil, er

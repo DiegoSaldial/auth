@@ -11,13 +11,68 @@ type Direcciones {
     registrado: Time!
 }
 
-type CategoriaVehiculos {
+# type CategoriaVehiculos {
+#     id: ID!
+#     nombre: String!
+#     descripcion: String! 
+# }
+
+# type Vehiculos {
+#     id: ID!
+#     placa: String!
+#     puertas: Int!
+#     capacidad: Int!
+#     descripcion: String!
+#     color: String!
+#     modelo: String!
+#     anio: Int!
+#     categoria_id: ID!
+#     foto_url: String
+#     estado: Boolean! 
+#     registrado: Time!
+# }
+
+type ConductorVehiculos {
+    usuario_id: ID!
+    vehiculo_id: ID!
+    estado: Boolean! 
+    registrado: Time!
+}
+
+# type Viajes {
+#     id: ID!
+#     pasajero_id: ID!
+#     conductor_id: ID
+#     estado: Boolean!
+#     descripcion: String!
+#     categoria_id: ID!
+#     origen_lat: Float!
+#     origen_lon: Float!
+#     destino_lat: Float
+#     destino_lon: Float
+#     registrado: Time!
+# }
+
+type ViajesLocations {
+    id: ID!
+    latitud: Float!
+    longitud: Float!
+    viaje_id: ID! 
+    registrado: Time!
+}
+
+# ============================================================
+# ============================================================
+# ============================================================
+
+type CategoriaVehiculosResponse {
     id: ID!
     nombre: String!
     descripcion: String! 
+    vehiculos: Int!
 }
 
-type Vehiculos {
+type VehiculosResponse {
     id: ID!
     placa: String!
     puertas: Int!
@@ -30,16 +85,13 @@ type Vehiculos {
     foto_url: String
     estado: Boolean! 
     registrado: Time!
+    conductor_id: ID
+    conductor: String
+    categoria: String!
+    estado_conductor_vehiculo: Boolean
 }
 
-type ConductorVehiculos {
-    usuario_id: ID!
-    vehiculo_id: ID!
-    estado: Boolean! 
-    registrado: Time!
-}
-
-type Viajes {
+type ViajesResponse {
     id: ID!
     pasajero_id: ID!
     conductor_id: ID
@@ -51,14 +103,8 @@ type Viajes {
     destino_lat: Float
     destino_lon: Float
     registrado: Time!
-}
-
-type ViajesLocations {
-    id: ID!
-    latitud: Float!
-    longitud: Float!
-    viaje_id: ID! 
-    registrado: Time!
+    pasajero_username: ID!
+    conductor_username: ID
 }
 
 # ============================================================

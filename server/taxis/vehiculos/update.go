@@ -5,7 +5,7 @@ import (
 	"taxis/graph/model"
 )
 
-func actualizar(db *sql.DB, input model.CreateVehiculos) (*model.Vehiculos, error) {
+func actualizar(db *sql.DB, input model.CreateVehiculos) (*model.VehiculosResponse, error) {
 	sql := `
 	update vehiculos set placa=?,puertas=?,capacidad=?,descripcion=?,color=?,modelo=?,anio=?,categoria_id=?,foto_url=? where id=?
 	`

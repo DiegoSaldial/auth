@@ -6,11 +6,25 @@ import (
 	"taxis/graph/model"
 )
 
-func ListarByRadio(db *sql.DB, lat, lon float64, radio int) ([]*model.Viajes, error) {
+func ListarByRadio(db *sql.DB, lat, lon float64, radio int) ([]*model.ViajesResponse, error) {
 	sql := `
-	select id,pasajero_id,conductor_id,estado,descripcion,ST_X(origen), ST_Y(origen),ST_X(destino), ST_Y(destino),categoria_id,registrado
-	from viajes
-	where ST_Distance_Sphere(Point(?, ?), origen) <= ?
+	SELECT v.id, 
+       v.pasajero_id, 
+       v.conductor_id, 
+       v.estado, 
+       v.descripcion, 
+       ST_X(v.origen) AS origen_x, 
+       ST_Y(v.origen) AS origen_y, 
+       ST_X(v.destino) AS destino_x, 
+       ST_Y(v.destino) AS destino_y, 
+       v.categoria_id, 
+       v.registrado,
+       u1.username AS pasajero_username, 
+       u2.username AS conductor_username
+	FROM viajes v
+	INNER JOIN usuarios u1 ON v.pasajero_id = u1.id
+	LEFT JOIN usuarios u2 ON v.conductor_id = u2.id
+	where ST_Distance_Sphere(Point(?, ?), v.origen) <= ?
 	`
 	rows, err := db.Query(sql, lat, lon, radio)
 	if err != nil {
@@ -18,9 +32,9 @@ func ListarByRadio(db *sql.DB, lat, lon float64, radio int) ([]*model.Viajes, er
 	}
 	defer rows.Close()
 
-	vs := []*model.Viajes{}
+	vs := []*model.ViajesResponse{}
 	for rows.Next() {
-		v := model.Viajes{}
+		v := model.ViajesResponse{}
 		er := parse2(rows, &v)
 		if er != nil {
 			return nil, er
@@ -30,18 +44,32 @@ func ListarByRadio(db *sql.DB, lat, lon float64, radio int) ([]*model.Viajes, er
 	return vs, nil
 }
 
-func GetById(db *sql.DB, id string) (*model.Viajes, error) {
+func GetById(db *sql.DB, id string) (*model.ViajesResponse, error) {
 	sql := `
-	select id,pasajero_id,conductor_id,estado,descripcion,ST_X(origen), ST_Y(origen),ST_X(destino), ST_Y(destino),categoria_id,registrado
-	from viajes
-	where id=?
+	SELECT v.id, 
+       v.pasajero_id, 
+       v.conductor_id, 
+       v.estado, 
+       v.descripcion, 
+       ST_X(v.origen) AS origen_x, 
+       ST_Y(v.origen) AS origen_y, 
+       ST_X(v.destino) AS destino_x, 
+       ST_Y(v.destino) AS destino_y, 
+       v.categoria_id, 
+       v.registrado,
+       u1.username AS pasajero_username, 
+       u2.username AS conductor_username
+	FROM viajes v
+	INNER JOIN usuarios u1 ON v.pasajero_id = u1.id
+	LEFT JOIN usuarios u2 ON v.conductor_id = u2.id
+	where v.id=?
 	`
 	row := db.QueryRow(sql, id)
 	if row == nil {
 		return nil, errors.New("no se encontraron el viaje")
 	}
 
-	v := model.Viajes{}
+	v := model.ViajesResponse{}
 	er := parse(row, &v)
 	if er != nil {
 		return nil, er
@@ -49,11 +77,25 @@ func GetById(db *sql.DB, id string) (*model.Viajes, error) {
 	return &v, nil
 }
 
-func ListarByUsuario(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
+func ListarByUsuario(db *sql.DB, usuario_id string) ([]*model.ViajesResponse, error) {
 	sql := `
-	select id,pasajero_id,conductor_id,estado,descripcion,ST_X(origen), ST_Y(origen),ST_X(destino), ST_Y(destino),categoria_id,registrado
-	from viajes
-	where pasajero_id=? or conductor_id=?
+	SELECT v.id, 
+       v.pasajero_id, 
+       v.conductor_id, 
+       v.estado, 
+       v.descripcion, 
+       ST_X(v.origen) AS origen_x, 
+       ST_Y(v.origen) AS origen_y, 
+       ST_X(v.destino) AS destino_x, 
+       ST_Y(v.destino) AS destino_y, 
+       v.categoria_id, 
+       v.registrado,
+       u1.username AS pasajero_username, 
+       u2.username AS conductor_username
+	FROM viajes v
+	INNER JOIN usuarios u1 ON v.pasajero_id = u1.id
+	LEFT JOIN usuarios u2 ON v.conductor_id = u2.id
+	where v.pasajero_id=? or v.conductor_id=?
 	`
 	rows, err := db.Query(sql, usuario_id, usuario_id)
 	if err != nil {
@@ -61,9 +103,9 @@ func ListarByUsuario(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
 	}
 	defer rows.Close()
 
-	vs := []*model.Viajes{}
+	vs := []*model.ViajesResponse{}
 	for rows.Next() {
-		v := model.Viajes{}
+		v := model.ViajesResponse{}
 		er := parse2(rows, &v)
 		if er != nil {
 			return nil, er
@@ -73,11 +115,25 @@ func ListarByUsuario(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
 	return vs, nil
 }
 
-func ListarByPasajero(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
+func ListarByPasajero(db *sql.DB, usuario_id string) ([]*model.ViajesResponse, error) {
 	sql := `
-	select id,pasajero_id,conductor_id,estado,descripcion,ST_X(origen), ST_Y(origen),ST_X(destino), ST_Y(destino),categoria_id,registrado
-	from viajes
-	where pasajero_id=?
+	SELECT v.id, 
+       v.pasajero_id, 
+       v.conductor_id, 
+       v.estado, 
+       v.descripcion, 
+       ST_X(v.origen) AS origen_x, 
+       ST_Y(v.origen) AS origen_y, 
+       ST_X(v.destino) AS destino_x, 
+       ST_Y(v.destino) AS destino_y, 
+       v.categoria_id, 
+       v.registrado,
+       u1.username AS pasajero_username, 
+       u2.username AS conductor_username
+	FROM viajes v
+	INNER JOIN usuarios u1 ON v.pasajero_id = u1.id
+	LEFT JOIN usuarios u2 ON v.conductor_id = u2.id
+	where v.pasajero_id=?
 	`
 	rows, err := db.Query(sql, usuario_id)
 	if err != nil {
@@ -85,9 +141,9 @@ func ListarByPasajero(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
 	}
 	defer rows.Close()
 
-	vs := []*model.Viajes{}
+	vs := []*model.ViajesResponse{}
 	for rows.Next() {
-		v := model.Viajes{}
+		v := model.ViajesResponse{}
 		er := parse2(rows, &v)
 		if er != nil {
 			return nil, er
@@ -97,11 +153,25 @@ func ListarByPasajero(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
 	return vs, nil
 }
 
-func ListarByConductor(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
+func ListarByConductor(db *sql.DB, usuario_id string) ([]*model.ViajesResponse, error) {
 	sql := `
-	select id,pasajero_id,conductor_id,estado,descripcion,ST_X(origen), ST_Y(origen),ST_X(destino), ST_Y(destino),categoria_id,registrado
-	from viajes
-	where conductor_id=?
+	SELECT v.id, 
+       v.pasajero_id, 
+       v.conductor_id, 
+       v.estado, 
+       v.descripcion, 
+       ST_X(v.origen) AS origen_x, 
+       ST_Y(v.origen) AS origen_y, 
+       ST_X(v.destino) AS destino_x, 
+       ST_Y(v.destino) AS destino_y, 
+       v.categoria_id, 
+       v.registrado,
+       u1.username AS pasajero_username, 
+       u2.username AS conductor_username
+	FROM viajes v
+	INNER JOIN usuarios u1 ON v.pasajero_id = u1.id
+	LEFT JOIN usuarios u2 ON v.conductor_id = u2.id
+	where v.conductor_id=?
 	`
 	rows, err := db.Query(sql, usuario_id)
 	if err != nil {
@@ -109,9 +179,9 @@ func ListarByConductor(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
 	}
 	defer rows.Close()
 
-	vs := []*model.Viajes{}
+	vs := []*model.ViajesResponse{}
 	for rows.Next() {
-		v := model.Viajes{}
+		v := model.ViajesResponse{}
 		er := parse2(rows, &v)
 		if er != nil {
 			return nil, er
@@ -121,11 +191,25 @@ func ListarByConductor(db *sql.DB, usuario_id string) ([]*model.Viajes, error) {
 	return vs, nil
 }
 
-func ListarByCategoria(db *sql.DB, categoria_id string) ([]*model.Viajes, error) {
+func ListarByCategoria(db *sql.DB, categoria_id string) ([]*model.ViajesResponse, error) {
 	sql := `
-	select id,pasajero_id,conductor_id,estado,descripcion,ST_X(origen), ST_Y(origen),ST_X(destino), ST_Y(destino),categoria_id,registrado
-	from viajes
-	where categoria_id=?
+	SELECT v.id, 
+       v.pasajero_id, 
+       v.conductor_id, 
+       v.estado, 
+       v.descripcion, 
+       ST_X(v.origen) AS origen_x, 
+       ST_Y(v.origen) AS origen_y, 
+       ST_X(v.destino) AS destino_x, 
+       ST_Y(v.destino) AS destino_y, 
+       v.categoria_id, 
+       v.registrado,
+       u1.username AS pasajero_username, 
+       u2.username AS conductor_username
+	FROM viajes v
+	INNER JOIN usuarios u1 ON v.pasajero_id = u1.id
+	LEFT JOIN usuarios u2 ON v.conductor_id = u2.id
+	where v.categoria_id=?
 	`
 	rows, err := db.Query(sql, categoria_id)
 	if err != nil {
@@ -133,9 +217,9 @@ func ListarByCategoria(db *sql.DB, categoria_id string) ([]*model.Viajes, error)
 	}
 	defer rows.Close()
 
-	vs := []*model.Viajes{}
+	vs := []*model.ViajesResponse{}
 	for rows.Next() {
-		v := model.Viajes{}
+		v := model.ViajesResponse{}
 		er := parse2(rows, &v)
 		if er != nil {
 			return nil, er

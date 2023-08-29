@@ -77,46 +77,91 @@ func (r *mutationResolver) ModificarRol(ctx context.Context, input model.UpdateR
 
 // CreateUpdateDireccion is the resolver for the createUpdateDireccion field.
 func (r *mutationResolver) CreateUpdateDireccion(ctx context.Context, input model.CreateDirecciones) (*model.Direcciones, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "createUpdateDireccion")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return direcciones.Crear(r.DB, input)
 }
 
 // CreateUpdateCategoriaVehiculo is the resolver for the createUpdateCategoriaVehiculo field.
-func (r *mutationResolver) CreateUpdateCategoriaVehiculo(ctx context.Context, input model.CreateCategoriaVehiculos) (*model.CategoriaVehiculos, error) {
+func (r *mutationResolver) CreateUpdateCategoriaVehiculo(ctx context.Context, input model.CreateCategoriaVehiculos) (*model.CategoriaVehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "createUpdateCategoriaVehiculo")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return categoriavehiculos.Crear(r.DB, input)
 }
 
 // CreateUpdateVehiculo is the resolver for the createUpdateVehiculo field.
-func (r *mutationResolver) CreateUpdateVehiculo(ctx context.Context, input model.CreateVehiculos) (*model.Vehiculos, error) {
+func (r *mutationResolver) CreateUpdateVehiculo(ctx context.Context, input model.CreateVehiculos) (*model.VehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "createUpdateVehiculo")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return vehiculos.Crear(r.DB, input)
 }
 
 // AsignarVehiculo is the resolver for the asignarVehiculo field.
 func (r *mutationResolver) AsignarVehiculo(ctx context.Context, input model.CreateConductorVehiculos) (*model.ConductorVehiculos, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "asignarVehiculo")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return conductorvehiculos.Crear(r.DB, input)
 }
 
+// QuitarVehiculo is the resolver for the quitarVehiculo field.
+func (r *mutationResolver) QuitarVehiculo(ctx context.Context, input model.CreateConductorVehiculos) (bool, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "quitarVehiculo")
+	if data == nil {
+		return false, errors.New(err.Error())
+	}
+	return conductorvehiculos.QuitarVehiculo(r.DB, input)
+}
+
 // CreateViaje is the resolver for the createViaje field.
-func (r *mutationResolver) CreateViaje(ctx context.Context, input model.CreateViajes) (*model.Viajes, error) {
+func (r *mutationResolver) CreateViaje(ctx context.Context, input model.CreateViajes) (*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "createViaje")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.Crear(r.DB, input)
 }
 
 // AceptarViaje is the resolver for the aceptarViaje field.
-func (r *mutationResolver) AceptarViaje(ctx context.Context, viajeID string, usuarioID string) (*model.Viajes, error) {
+func (r *mutationResolver) AceptarViaje(ctx context.Context, viajeID string, usuarioID string) (*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "aceptarViaje")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.AceptarViaje(r.DB, viajeID, usuarioID)
 }
 
 // CancelarViaje is the resolver for the cancelarViaje field.
-func (r *mutationResolver) CancelarViaje(ctx context.Context, id string) (*model.Viajes, error) {
+func (r *mutationResolver) CancelarViaje(ctx context.Context, id string) (*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "cancelarViaje")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.CancelarViaje(r.DB, id)
 }
 
 // FinalizarViaje is the resolver for the finalizarViaje field.
-func (r *mutationResolver) FinalizarViaje(ctx context.Context, id string) (*model.Viajes, error) {
+func (r *mutationResolver) FinalizarViaje(ctx context.Context, id string) (*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "finalizarViaje")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.FinalizarViaje(r.DB, id)
 }
 
 // SetUbicacionViaje is the resolver for the setUbicacionViaje field.
 func (r *mutationResolver) SetUbicacionViaje(ctx context.Context, input model.CreateViajesLocations) (*model.ViajesLocations, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "setUbicacionViaje")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajeslocations.SetUbicacion(r.DB, input)
 }
 
@@ -167,56 +212,136 @@ func (r *queryResolver) PermisosByRol(ctx context.Context, rolID string) ([]*mod
 
 // DireccionesByUsuario is the resolver for the direccionesByUsuario field.
 func (r *queryResolver) DireccionesByUsuario(ctx context.Context, usuarioID string) ([]*model.Direcciones, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "direccionesByUsuario")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return direcciones.GetByUsuario(r.DB, usuarioID)
 }
 
 // CategoriaVehiculos is the resolver for the categoria_vehiculos field.
-func (r *queryResolver) CategoriaVehiculos(ctx context.Context) ([]*model.CategoriaVehiculos, error) {
+func (r *queryResolver) CategoriaVehiculos(ctx context.Context) ([]*model.CategoriaVehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "categoria_vehiculos")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return categoriavehiculos.Listar(r.DB)
 }
 
+// CategoriaVehiculo is the resolver for the categoria_vehiculo field.
+func (r *queryResolver) CategoriaVehiculo(ctx context.Context, id string) (*model.CategoriaVehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "categoria_vehiculo")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return categoriavehiculos.GetById(r.DB, id)
+}
+
 // Vehiculos is the resolver for the vehiculos field.
-func (r *queryResolver) Vehiculos(ctx context.Context) ([]*model.Vehiculos, error) {
+func (r *queryResolver) Vehiculos(ctx context.Context) ([]*model.VehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "vehiculos")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return vehiculos.Listar(r.DB)
 }
 
+// Vehiculo is the resolver for the vehiculo field.
+func (r *queryResolver) Vehiculo(ctx context.Context, id string) (*model.VehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "vehiculo")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return vehiculos.GetById(r.DB, id)
+}
+
 // VehiculosByCategoria is the resolver for the vehiculosByCategoria field.
-func (r *queryResolver) VehiculosByCategoria(ctx context.Context, categoriaID string) ([]*model.Vehiculos, error) {
+func (r *queryResolver) VehiculosByCategoria(ctx context.Context, categoriaID string) ([]*model.VehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "vehiculosByCategoria")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return vehiculos.ListarByCategoria(r.DB, categoriaID)
 }
 
 // VehiculosByConductor is the resolver for the vehiculosByConductor field.
-func (r *queryResolver) VehiculosByConductor(ctx context.Context, usuarioID string) ([]*model.Vehiculos, error) {
+func (r *queryResolver) VehiculosByConductor(ctx context.Context, usuarioID string) ([]*model.VehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "vehiculosByConductor")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return vehiculos.ListarByConductor(r.DB, usuarioID)
 }
 
 // ConductoresByVehiculo is the resolver for the conductoresByVehiculo field.
 func (r *queryResolver) ConductoresByVehiculo(ctx context.Context, vehiculoID string) ([]*model.UsuariosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "conductoresByVehiculo")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return conductorvehiculos.UsuariosByVehiculo(r.DB, vehiculoID)
 }
 
+// Conductores is the resolver for the conductores field.
+func (r *queryResolver) Conductores(ctx context.Context) ([]*model.UsuariosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "conductores")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return conductorvehiculos.Conductores(r.DB)
+}
+
+// Clientes is the resolver for the clientes field.
+func (r *queryResolver) Clientes(ctx context.Context) ([]*model.UsuariosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "clientes")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return conductorvehiculos.Clientes(r.DB)
+}
+
 // ViajesCercanos is the resolver for the viajesCercanos field.
-func (r *queryResolver) ViajesCercanos(ctx context.Context, lat float64, lon float64, radioMts int) ([]*model.Viajes, error) {
+func (r *queryResolver) ViajesCercanos(ctx context.Context, lat float64, lon float64, radioMts int) ([]*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "viajesCercanos")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.ListarByRadio(r.DB, lat, lon, radioMts)
 }
 
 // ViajesByUsuario is the resolver for the viajesByUsuario field.
-func (r *queryResolver) ViajesByUsuario(ctx context.Context, usuarioID string) ([]*model.Viajes, error) {
+func (r *queryResolver) ViajesByUsuario(ctx context.Context, usuarioID string) ([]*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "viajesByUsuario")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.ListarByUsuario(r.DB, usuarioID)
 }
 
 // ViajesByPasajero is the resolver for the viajesByPasajero field.
-func (r *queryResolver) ViajesByPasajero(ctx context.Context, usuarioID string) ([]*model.Viajes, error) {
+func (r *queryResolver) ViajesByPasajero(ctx context.Context, usuarioID string) ([]*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "viajesByPasajero")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.ListarByPasajero(r.DB, usuarioID)
 }
 
 // ViajesByConductor is the resolver for the viajesByConductor field.
-func (r *queryResolver) ViajesByConductor(ctx context.Context, usuarioID string) ([]*model.Viajes, error) {
+func (r *queryResolver) ViajesByConductor(ctx context.Context, usuarioID string) ([]*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "viajesByConductor")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.ListarByConductor(r.DB, usuarioID)
 }
 
 // ViajesByCategoria is the resolver for the viajesByCategoria field.
-func (r *queryResolver) ViajesByCategoria(ctx context.Context, categoriaID string) ([]*model.Viajes, error) {
+func (r *queryResolver) ViajesByCategoria(ctx context.Context, categoriaID string) ([]*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "viajesByCategoria")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
 	return viajes.ListarByCategoria(r.DB, categoriaID)
 }
 

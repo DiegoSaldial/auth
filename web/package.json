@@ -1,8 +1,8 @@
 {
-  "name": "web",
+  "name": "taxis_web_admin",
   "version": "0.0.1",
-  "description": "Sistema de inventarios",
-  "productName": "inventarios",
+  "description": "Sistema de Taxis",
+  "productName": "Taxis",
   "author": "diego.saldias <diego.saldias@esam.edu.bo>",
   "private": true,
   "scripts": {

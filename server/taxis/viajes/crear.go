@@ -6,7 +6,7 @@ import (
 	"taxis/graph/model"
 )
 
-func Crear(db *sql.DB, input model.CreateViajes) (*model.Viajes, error) {
+func Crear(db *sql.DB, input model.CreateViajes) (*model.ViajesResponse, error) {
 	sql := `
 	insert into viajes(pasajero_id,descripcion,origen,destino,categoria_id)
 	values(?,?,POINT(?,?),POINT(?,?),?)

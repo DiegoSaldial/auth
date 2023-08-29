@@ -60,7 +60,7 @@ create table `direcciones`(
 
 create table `categoria_vehiculos`(
     `id` integer unsigned not null auto_increment primary key, 
-    `nombre` varchar(15) not null UNIQUE,
+    `nombre` varchar(30) not null UNIQUE,
     `descripcion` varchar(250) not null
 );
 
@@ -123,7 +123,8 @@ create table `viajes_locations`(
 
 insert into usuarios(nombres,apellidos,username,password,telefono,documento) values('Usuario','Administrador','admin','admin','+591 78227092','10721310');
 insert into roles(nombre,bit) values('administrador',1);
-insert into roles(nombre,bit) values('invitado',2);
+insert into roles(nombre,bit) values('pasajero',2);
+insert into roles(nombre,bit) values('conductor',3);
 insert into rol_usuario(usuario_id,rol_id) values(1,1);
 
 -- administrador    = 1
@@ -145,5 +146,33 @@ insert into rol_permiso(rol_bits,metodo,descripcion) values
     (1,"createRol","Registra un nuevo Rol"),
     (1,"deleteRol","Elimina un rol del sistema"),
     (1,"modificarRol","Actualiza los datos de un rol");
+
+-- app
+insert into rol_permiso(rol_bits,metodo,descripcion) values
+    (1,"direccionesByUsuario","Recupera datos de un usuario por su username"),
+    (1,"categoria_vehiculos","Recupera la lista de todos los permisos disponibles"),  
+    (1,"categoria_vehiculo","Recupera la lista de todos los roles disponibles"),  
+    (1,"vehiculos","Recupera la lista de todos los usuarios registrados"),  
+    (1,"vehiculo","Recupera la lista de todos los permisos disponibles por rol"),
+    (1,"vehiculosByCategoria","Registra un nuevo usuario"), 
+    (1,"vehiculosByConductor","Actualiza los datos de un usuario"), 
+    (1,"conductoresByVehiculo","Registra un nuevo Rol"),
+    (1,"conductores","Elimina un rol del sistema"),
+    (1,"clientes","Elimina un rol del sistema"),
+    (1,"viajesCercanos","Elimina un rol del sistema"),
+    (1,"viajesByUsuario","Elimina un rol del sistema"),
+    (1,"viajesByPasajero","Elimina un rol del sistema"),
+    (1,"viajesByConductor","Elimina un rol del sistema"),
+    (1,"viajesByCategoria","Elimina un rol del sistema"),
+    (1,"createUpdateDireccion","Elimina un rol del sistema"),
+    (1,"createUpdateCategoriaVehiculo","Elimina un rol del sistema"),
+    (1,"createUpdateVehiculo","Elimina un rol del sistema"),
+    (1,"asignarVehiculo","Elimina un rol del sistema"),
+    (1,"quitarVehiculo","Elimina un rol del sistema"),
+    (1,"createViaje","Elimina un rol del sistema"),
+    (1,"aceptarViaje","Elimina un rol del sistema"),
+    (1,"cancelarViaje","Elimina un rol del sistema"),
+    (1,"finalizarViaje","Elimina un rol del sistema"),
+    (1,"setUbicacionViaje","Elimina un rol del sistema");
 
 
