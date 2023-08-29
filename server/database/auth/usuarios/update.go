@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 	"taxis/graph/model"
+	"taxis/taxis/firestore"
 )
 
 func UpdateUsuario(db *sql.DB, input model.UpdateUsuario) (*model.Usuario, error) {
@@ -38,8 +39,8 @@ func UpdateUsuario(db *sql.DB, input model.UpdateUsuario) (*model.Usuario, error
 		return nil, err
 	} */
 
-	sql := "update usuarios set nombres=?,apellidos=?,username=?,foto_url=?,telefono=?,correo=?,documento=?,domicilio=?,fecha_nac=?"
-	params := []interface{}{input.Nombres, input.Apellidos, input.Username, input.FotoURL, input.Telefono, input.Correo, input.Documento, input.Domicilio, input.FechaNac}
+	sql := "update usuarios set nombres=?,apellidos=?,username=?,telefono=?,correo=?,documento=?,domicilio=?,fecha_nac=?"
+	params := []interface{}{input.Nombres, input.Apellidos, input.Username, input.Telefono, input.Correo, input.Documento, input.Domicilio, input.FechaNac}
 
 	if input.Password != nil {
 		sql += ",password=?"
@@ -86,5 +87,23 @@ func UpdateUsuario(db *sql.DB, input model.UpdateUsuario) (*model.Usuario, error
 		return nil, err
 	}
 
+	if input.FotoURL != nil {
+		foto_url, er := firestore.SubirImagen(*input.FotoURL, input.Username+".jpg")
+		if er == nil {
+			return actualizarFoto(db, foto_url, input.Username)
+		}
+	}
+
 	return usuarioByUname(db, input.Username)
+}
+
+func actualizarFoto(db *sql.DB, fotourl, username string) (*model.Usuario, error) {
+	sql := `
+	update usuarios set foto_url=? where username=?
+	`
+	_, err := db.Exec(sql, fotourl, username)
+	if err != nil {
+		return nil, err
+	}
+	return usuarioByUname(db, username)
 }

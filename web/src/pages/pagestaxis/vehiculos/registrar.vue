@@ -68,7 +68,7 @@
       </div>
 
       <div class="row justify-center">
-        <q-btn outline color="green" :loading="store.is_loading_page" :label="id ? 'Guardar Cambios' : 'Registrar'"
+        <q-btn outline color="green" :loading="loading" :disable="loading" :label="id ? 'Guardar Cambios' : 'Registrar'"
           size="small" icon="check" class="q-mt-xl" type="submit" />
       </div>
     </q-form>
@@ -108,14 +108,17 @@ export default {
       if(input.value) {
         const data:CreateVehiculos = Object.assign({},input.value)
         if(id.value) data.id = id.value;
-        data.categoria_id = input.value.categoria_id.id;
+        const cate: any = JSON.parse(JSON.stringify(input.value.categoria_id))
+        data.categoria_id = cate.id;
         registrar(data);
       }
     }
 
     async function registrar(input: CreateVehiculos) {
+      loading.value = true;
       const res = await vehiculosServices.createUpdateVehiculo(input).then((e) => e).catch((e) => e)
       console.log(res);
+      loading.value = false;
       if (res.createUpdateVehiculo) router.back();
     }
 
