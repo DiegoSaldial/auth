@@ -19,6 +19,10 @@ export const pageStore = defineStore('pageStore', () => {
 
   const is_loading_page = computed(() => loading_page.value);
 
+  function set_loading_page(t: boolean) {
+    loading_page.value = t;
+  }
+
   function setDataLogin(data: any) {
     data = JSON.stringify(data);
     window.localStorage.setItem('xdatalogin', data);
@@ -90,6 +94,7 @@ export const pageStore = defineStore('pageStore', () => {
   return {
     getsite,
     is_loading_page,
+    set_loading_page,
     setSessionTime,
     run_graphql,
     logout,
