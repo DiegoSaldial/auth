@@ -31,6 +31,10 @@
               @click="logout()" />
           </q-menu>
         </q-btn>
+
+        <q-inner-loading :showing="store.is_loading_page" color="primary" style="background: transparent">
+          <q-spinner-dots size="40px" color="yellow" />
+        </q-inner-loading>
       </q-toolbar>
     </q-header>
 
