@@ -161,6 +161,12 @@ input CreateViajesLocations {
     longitud: Float!
 }
 
+input QueryFechas {
+    fecha_inicio: String!
+    fecha_fin: String!
+    include_disponibles: Boolean!
+}
+
 # ============================================================
 # ============================================================
 # ============================================================

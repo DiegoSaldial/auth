@@ -7,6 +7,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
+import { pageStore } from '../stores/pageStore';
 
 /*
  * If not building with SSR mode, you can
@@ -22,6 +23,9 @@ export default route(function (/* { store, ssrContext } */) {
     ? createMemoryHistory
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);
 
+
+  const sto = pageStore();
+
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
@@ -30,6 +34,16 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach(( ) => {
+    sto.set_loading_page(true);
+    return true;
+  });
+
+  Router.afterEach(()=>{
+    sto.set_loading_page(false);
+    return true;
   });
 
   return Router;

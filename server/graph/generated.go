@@ -109,6 +109,7 @@ type ComplexityRoot struct {
 		VehiculosByConductor  func(childComplexity int, usuarioID string) int
 		ViajesByCategoria     func(childComplexity int, categoriaID string) int
 		ViajesByConductor     func(childComplexity int, usuarioID string) int
+		ViajesByFecha         func(childComplexity int, input model.QueryFechas) int
 		ViajesByPasajero      func(childComplexity int, usuarioID string) int
 		ViajesByUsuario       func(childComplexity int, usuarioID string) int
 		ViajesCercanos        func(childComplexity int, lat float64, lon float64, radioMts int) int
@@ -275,6 +276,7 @@ type QueryResolver interface {
 	ViajesByPasajero(ctx context.Context, usuarioID string) ([]*model.ViajesResponse, error)
 	ViajesByConductor(ctx context.Context, usuarioID string) ([]*model.ViajesResponse, error)
 	ViajesByCategoria(ctx context.Context, categoriaID string) ([]*model.ViajesResponse, error)
+	ViajesByFecha(ctx context.Context, input model.QueryFechas) ([]*model.ViajesResponse, error)
 }
 
 type executableSchema struct {
@@ -781,6 +783,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ViajesByConductor(childComplexity, args["usuario_id"].(string)), true
+
+	case "Query.viajesByFecha":
+		if e.complexity.Query.ViajesByFecha == nil {
+			break
+		}
+
+		args, err := ec.field_Query_viajesByFecha_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ViajesByFecha(childComplexity, args["input"].(model.QueryFechas)), true
 
 	case "Query.viajesByPasajero":
 		if e.complexity.Query.ViajesByPasajero == nil {
@@ -1464,6 +1478,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateViajesLocations,
 		ec.unmarshalInputNewRol,
 		ec.unmarshalInputNewUsuario,
+		ec.unmarshalInputQueryFechas,
 		ec.unmarshalInputUpdateRol,
 		ec.unmarshalInputUpdateUsuario,
 	)
@@ -2051,6 +2066,21 @@ func (ec *executionContext) field_Query_viajesByConductor_args(ctx context.Conte
 		}
 	}
 	args["usuario_id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_viajesByFecha_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.QueryFechas
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNQueryFechas2taxisᚋgraphᚋmodelᚐQueryFechas(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -5620,6 +5650,89 @@ func (ec *executionContext) fieldContext_Query_viajesByCategoria(ctx context.Con
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_viajesByCategoria_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_viajesByFecha(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_viajesByFecha(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ViajesByFecha(rctx, fc.Args["input"].(model.QueryFechas))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.ViajesResponse)
+	fc.Result = res
+	return ec.marshalNViajesResponse2ᚕᚖtaxisᚋgraphᚋmodelᚐViajesResponseᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_viajesByFecha(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ViajesResponse_id(ctx, field)
+			case "pasajero_id":
+				return ec.fieldContext_ViajesResponse_pasajero_id(ctx, field)
+			case "conductor_id":
+				return ec.fieldContext_ViajesResponse_conductor_id(ctx, field)
+			case "estado":
+				return ec.fieldContext_ViajesResponse_estado(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_ViajesResponse_descripcion(ctx, field)
+			case "categoria_id":
+				return ec.fieldContext_ViajesResponse_categoria_id(ctx, field)
+			case "origen_lat":
+				return ec.fieldContext_ViajesResponse_origen_lat(ctx, field)
+			case "origen_lon":
+				return ec.fieldContext_ViajesResponse_origen_lon(ctx, field)
+			case "destino_lat":
+				return ec.fieldContext_ViajesResponse_destino_lat(ctx, field)
+			case "destino_lon":
+				return ec.fieldContext_ViajesResponse_destino_lon(ctx, field)
+			case "registrado":
+				return ec.fieldContext_ViajesResponse_registrado(ctx, field)
+			case "pasajero_username":
+				return ec.fieldContext_ViajesResponse_pasajero_username(ctx, field)
+			case "conductor_username":
+				return ec.fieldContext_ViajesResponse_conductor_username(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ViajesResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_viajesByFecha_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -11983,6 +12096,53 @@ func (ec *executionContext) unmarshalInputNewUsuario(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputQueryFechas(ctx context.Context, obj interface{}) (model.QueryFechas, error) {
+	var it model.QueryFechas
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"fecha_inicio", "fecha_fin", "include_disponibles"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "fecha_inicio":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fecha_inicio"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.FechaInicio = data
+		case "fecha_fin":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fecha_fin"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.FechaFin = data
+		case "include_disponibles":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("include_disponibles"))
+			data, err := ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IncludeDisponibles = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateRol(ctx context.Context, obj interface{}) (model.UpdateRol, error) {
 	var it model.UpdateRol
 	asMap := map[string]interface{}{}
@@ -12956,6 +13116,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_viajesByCategoria(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "viajesByFecha":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_viajesByFecha(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -14305,6 +14487,11 @@ func (ec *executionContext) unmarshalNNewRol2taxisᚋgraphᚋmodelᚐNewRol(ctx 
 
 func (ec *executionContext) unmarshalNNewUsuario2taxisᚋgraphᚋmodelᚐNewUsuario(ctx context.Context, v interface{}) (model.NewUsuario, error) {
 	res, err := ec.unmarshalInputNewUsuario(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNQueryFechas2taxisᚋgraphᚋmodelᚐQueryFechas(ctx context.Context, v interface{}) (model.QueryFechas, error) {
+	res, err := ec.unmarshalInputQueryFechas(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 

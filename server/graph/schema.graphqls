@@ -170,6 +170,8 @@ type Query {
     viajesByConductor(usuario_id:ID!): [ViajesResponse!]!
     """ Retorna los viajes segun la categoria """
     viajesByCategoria(categoria_id:ID!): [ViajesResponse!]!
+    """ Retorna los viajes en el rango de fechas y los que no tienen conductor asignado y estado 1 """
+    viajesByFecha(input:QueryFechas!): [ViajesResponse!]!
 }
 
 

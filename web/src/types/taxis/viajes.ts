@@ -30,3 +30,14 @@ export const CrearInput: CreateViajes = {
   destino_lat: 0,
   destino_lon: 0,
 }
+
+export interface QueryViajes {
+  fecha_inicio: string;
+  fecha_fin: string;
+  include_disponibles: boolean;
+}
+export const QueryInput: QueryViajes = {
+  fecha_inicio: '',
+  fecha_fin: '',
+  include_disponibles: true,
+}

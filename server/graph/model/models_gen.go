@@ -99,6 +99,12 @@ type NewUsuario struct {
 	Roles     []string   `json:"roles"`
 }
 
+type QueryFechas struct {
+	FechaInicio        string `json:"fecha_inicio"`
+	FechaFin           string `json:"fecha_fin"`
+	IncludeDisponibles bool   `json:"include_disponibles"`
+}
+
 type Rol struct {
 	ID     string `json:"id"`
 	Nombre string `json:"nombre"`

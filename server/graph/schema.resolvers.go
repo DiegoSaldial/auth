@@ -345,6 +345,15 @@ func (r *queryResolver) ViajesByCategoria(ctx context.Context, categoriaID strin
 	return viajes.ListarByCategoria(r.DB, categoriaID)
 }
 
+// ViajesByFecha is the resolver for the viajesByFecha field.
+func (r *queryResolver) ViajesByFecha(ctx context.Context, input model.QueryFechas) ([]*model.ViajesResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "viajesByFecha")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return viajes.ListarByFechas(r.DB, input)
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 

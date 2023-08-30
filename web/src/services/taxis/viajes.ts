@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { pageStore } from '../../stores/pageStore';
 import gql from 'graphql-tag';
-import { CreateViajes } from '../../types/taxis/viajes';
+import { CreateViajes, QueryViajes } from '../../types/taxis/viajes';
 
 export default class ViajesService {
   async viajesCercanos(lat:number, lon:number,radioMts:number) {
@@ -127,7 +127,7 @@ export default class ViajesService {
   async viajesByCategoria(categoria_id:string) {
     const store = pageStore();
     const sql = gql`
-      query viajesByConductor($categoria_id:ID!){
+      query viajesByCategoria($categoria_id:ID!){
         viajesByCategoria(categoria_id:$categoria_id){
           id
           pasajero_id
@@ -149,6 +149,36 @@ export default class ViajesService {
     const res: any = await store.run_graphql(
       sql,
       { categoria_id:categoria_id },
+      { showNotificacion: false, showNotificacionError: true }
+    );
+    return res;
+  }
+
+  async viajesByFecha(input:QueryViajes) {
+    const store = pageStore();
+    const sql = gql`
+      query viajesByFecha($input:QueryFechas!){
+        viajesByFecha(input:$input){
+          id
+          pasajero_id
+          conductor_id
+          estado
+          descripcion
+          categoria_id
+          origen_lat
+          origen_lon
+          destino_lat
+          destino_lon
+          registrado
+          pasajero_username
+          conductor_username
+        }
+      }
+    `;
+
+    const res: any = await store.run_graphql(
+      sql,
+      { input:input },
       { showNotificacion: false, showNotificacionError: true }
     );
     return res;

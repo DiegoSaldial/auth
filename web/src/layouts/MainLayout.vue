@@ -11,7 +11,6 @@
         <q-btn flat :label="datalogin.username" icon="group">
           <q-menu ref="menupefil" class="q-pa-md">
             <div class="text-h6 q-mb-md">
-              <!-- <p class="q-ma-none">Menu del usuario</p> -->
               <p class="q-ma-none"> {{ datalogin.nombres }} {{ datalogin.apellidos }} </p>
               <p class="q-ma-none text-green"> <small>{{ datalogin.rol }}</small> </p>
 
@@ -31,6 +30,10 @@
               @click="logout()" />
           </q-menu>
         </q-btn>
+
+        <q-inner-loading :showing="store.is_loading_page" color="primary" style="background: transparent">
+          <q-spinner-dots size="40px" color="yellow" />
+        </q-inner-loading>
       </q-toolbar>
     </q-header>
 
