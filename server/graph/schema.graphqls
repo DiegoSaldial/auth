@@ -127,6 +127,8 @@ input UpdateRol {
 
 
 # go run github.com/99designs/gqlgen generate
+# CGO_ENABLED=0 go build -ldflags="-s -w" -o taxisapp server.go
+# scp taxisapp root@144.202.34.58:/root/apps/taxisapp/
 type Query {
   """ Retorna al usuario con el username proporcionados"""
   usuarioByUsername(username:String!): UsuariosResponse!

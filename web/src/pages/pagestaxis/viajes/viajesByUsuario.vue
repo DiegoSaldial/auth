@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <Atras />
 
-    <q-table title="Viajes por usuario" :loading="loading" :rows="viajes" :columns="columns"
+    <q-table title="Viajes por usuario (pasajero/conductor)" :loading="loading" :rows="viajes" :columns="columns"
       row-key="name" hide-pagination :rows-per-page-options="[0]" :filter="filter">
 
       <template v-slot:top-right>
