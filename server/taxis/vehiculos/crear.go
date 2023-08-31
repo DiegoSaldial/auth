@@ -22,7 +22,7 @@ func Crear(db *sql.DB, input model.CreateVehiculos) (*model.VehiculosResponse, e
 	idd, _ := res.LastInsertId()
 	id := strconv.FormatInt(idd, 10)
 	if input.FotoURL != nil {
-		foto_url, er := firestore.SubirImagen(*input.FotoURL, input.Placa+".jpg")
+		foto_url, er := firestore.SubirImagen(*input.FotoURL, input.Placa+".jpg", true)
 		if er == nil {
 			return actualizarFoto(db, foto_url, id)
 		}

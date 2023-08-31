@@ -3,3 +3,4 @@ web/src-pwa/
 web/.vscode/
 web/.env
 server/.env
+server/taxisapp

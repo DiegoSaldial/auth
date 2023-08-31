@@ -56,7 +56,7 @@ func CreateUsuario(db *sql.DB, input model.NewUsuario) (*model.Usuario, error) {
 	}
 
 	if input.FotoURL != nil {
-		foto_url, er := firestore.SubirImagen(*input.FotoURL, input.Username+".jpg")
+		foto_url, er := firestore.SubirImagen(*input.FotoURL, input.Username+".jpg", true)
 		if er == nil {
 			return actualizarFoto(db, foto_url, input.Username)
 		}

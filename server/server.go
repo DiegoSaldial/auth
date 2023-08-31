@@ -82,5 +82,6 @@ func main() {
 	if er != nil {
 		fmt.Println(er)
 	}
-}
-*/
+
+	firestore.Resize(b64, 10)
+} */

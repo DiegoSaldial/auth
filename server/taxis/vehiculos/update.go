@@ -15,7 +15,7 @@ func actualizar(db *sql.DB, input model.CreateVehiculos) (*model.VehiculosRespon
 		return nil, err
 	}
 	if input.FotoURL != nil {
-		foto_url, er := firestore.SubirImagen(*input.FotoURL, input.Placa+".jpg")
+		foto_url, er := firestore.SubirImagen(*input.FotoURL, input.Placa+".jpg", true)
 		if er == nil {
 			return actualizarFoto(db, foto_url, *input.ID)
 		}
