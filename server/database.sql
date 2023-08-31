@@ -150,7 +150,8 @@ insert into rol_permiso(rol_bits,metodo,descripcion) values
     (1,"updateUsuario","Actualiza los datos de un usuario"), 
     (1,"createRol","Registra un nuevo Rol"),
     (1,"deleteRol","Elimina un rol del sistema"),
-    (1,"modificarRol","Actualiza los datos de un rol");
+    (1,"modificarRol","Actualiza los datos de un rol"),
+    (1,"usuariosByRol","Recupera la lista de todos los usuarios segun un rol");
 
 -- ejercicios
 -- agregar un usuario llamado juan con el rol de administrador

@@ -136,6 +136,8 @@ type Query {
   roles(lite:Boolean!):[RolResponse!]! 
   """ Retorna un listado de los usuarios registrados """
   usuarios:[UsuariosResponse!]! 
+  """ Retorna un listado de los usuarios segun el rol """
+  usuariosByRol(rol_id:ID!):[UsuariosResponse!]! 
   """ listar todos los permisos accesibles por un rol """
   permisosByRol(rol_id:ID!,):[RolPermiso!]! 
 }

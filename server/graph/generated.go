@@ -107,6 +107,7 @@ type ComplexityRoot struct {
 		Roles             func(childComplexity int, lite bool) int
 		UsuarioByUsername func(childComplexity int, username string) int
 		Usuarios          func(childComplexity int) int
+		UsuariosByRol     func(childComplexity int, rolID string) int
 	}
 
 	Rol struct {
@@ -218,6 +219,7 @@ type QueryResolver interface {
 	Permisos(ctx context.Context) ([]*model.RolPermiso, error)
 	Roles(ctx context.Context, lite bool) ([]*model.RolResponse, error)
 	Usuarios(ctx context.Context) ([]*model.UsuariosResponse, error)
+	UsuariosByRol(ctx context.Context, rolID string) ([]*model.UsuariosResponse, error)
 	PermisosByRol(ctx context.Context, rolID string) ([]*model.RolPermiso, error)
 }
 
@@ -579,6 +581,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Usuarios(childComplexity), true
+
+	case "Query.usuariosByRol":
+		if e.complexity.Query.UsuariosByRol == nil {
+			break
+		}
+
+		args, err := ec.field_Query_usuariosByRol_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UsuariosByRol(childComplexity, args["rol_id"].(string)), true
 
 	case "Rol.bit":
 		if e.complexity.Rol.Bit == nil {
@@ -1374,6 +1388,21 @@ func (ec *executionContext) field_Query_usuarioByUsername_args(ctx context.Conte
 		}
 	}
 	args["username"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_usuariosByRol_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["rol_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rol_id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["rol_id"] = arg0
 	return args, nil
 }
 
@@ -3504,6 +3533,91 @@ func (ec *executionContext) fieldContext_Query_usuarios(ctx context.Context, fie
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UsuariosResponse", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_usuariosByRol(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_usuariosByRol(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UsuariosByRol(rctx, fc.Args["rol_id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.UsuariosResponse)
+	fc.Result = res
+	return ec.marshalNUsuariosResponse2ᚕᚖinventariosᚋgraphᚋmodelᚐUsuariosResponseᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_usuariosByRol(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UsuariosResponse_id(ctx, field)
+			case "nombres":
+				return ec.fieldContext_UsuariosResponse_nombres(ctx, field)
+			case "apellidos":
+				return ec.fieldContext_UsuariosResponse_apellidos(ctx, field)
+			case "username":
+				return ec.fieldContext_UsuariosResponse_username(ctx, field)
+			case "foto_url":
+				return ec.fieldContext_UsuariosResponse_foto_url(ctx, field)
+			case "telefono":
+				return ec.fieldContext_UsuariosResponse_telefono(ctx, field)
+			case "documento":
+				return ec.fieldContext_UsuariosResponse_documento(ctx, field)
+			case "fecha_nac":
+				return ec.fieldContext_UsuariosResponse_fecha_nac(ctx, field)
+			case "domicilio":
+				return ec.fieldContext_UsuariosResponse_domicilio(ctx, field)
+			case "correo":
+				return ec.fieldContext_UsuariosResponse_correo(ctx, field)
+			case "registrado":
+				return ec.fieldContext_UsuariosResponse_registrado(ctx, field)
+			case "estado":
+				return ec.fieldContext_UsuariosResponse_estado(ctx, field)
+			case "dataname":
+				return ec.fieldContext_UsuariosResponse_dataname(ctx, field)
+			case "roles":
+				return ec.fieldContext_UsuariosResponse_roles(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UsuariosResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_usuariosByRol_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -9658,6 +9772,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_usuarios(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "usuariosByRol":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_usuariosByRol(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
