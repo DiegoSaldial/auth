@@ -194,11 +194,20 @@ func (r *queryResolver) Roles(ctx context.Context, lite bool) ([]*model.RolRespo
 
 // Usuarios is the resolver for the usuarios field.
 func (r *queryResolver) Usuarios(ctx context.Context) ([]*model.UsuariosResponse, error) {
-	data, err := xauth.CtxValueApp(ctx, r.DB, "roles")
+	data, err := xauth.CtxValueApp(ctx, r.DB, "usuarios")
 	if data == nil {
 		return nil, errors.New(err.Error())
 	}
 	return usuarios.Usuarios(r.DB)
+}
+
+// UsuariosByRol is the resolver for the usuariosByRol field.
+func (r *queryResolver) UsuariosByRol(ctx context.Context, rolID string) ([]*model.UsuariosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "usuariosByRol")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return usuarios.UsuariosByRol(r.DB, rolID)
 }
 
 // PermisosByRol is the resolver for the permisosByRol field.
