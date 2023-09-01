@@ -24,7 +24,7 @@
         </q-checkbox>
 
         <q-btn-group square flat outline class="q-pr-md">
-          <q-btn outline color="green" label="buscar" size="small" icon="add" @click="listar()" />
+          <q-btn outline color="green" label="buscar" :disable="loading" :loading="loading" size="small" icon="add" @click="listar()" />
         </q-btn-group>
 
         <q-input outlined dense debounce="300" v-model="filter" placeholder="buscar ..." >
@@ -121,7 +121,7 @@ export default {
     const viajes = ref<Viajes[]>([]);
     const loading = ref(false);
     const viajesServices = new ViajesServices();
-    const query = ref<QueryViajes>(QueryInput)
+    const query = ref<QueryViajes>(QueryInput);
 
     async function listar(){
       viajes.value = [];

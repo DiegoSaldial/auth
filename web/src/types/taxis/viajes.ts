@@ -10,6 +10,8 @@ export interface Viajes {
   destino_lat: number
   destino_lon: number
   registrado: string;
+  pasajero_username: string;
+  conductor_username: string;
 }
 
 export interface CreateViajes {

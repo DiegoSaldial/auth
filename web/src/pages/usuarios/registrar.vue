@@ -86,7 +86,7 @@
 
 
       <div class="row justify-center">
-        <q-btn outline color="green" :loading="store.is_loading_page" :label="id ? 'Guardar Cambios' : 'Registrar'"
+        <q-btn outline color="green" :loading="loading" :disable="loading" :label="id ? 'Guardar Cambios' : 'Registrar'"
           size="small" icon="check" class="q-mt-xl" type="submit" />
       </div>
     </q-form>
@@ -183,8 +183,10 @@ export default {
           fecha_nac: xinput.fecha_nac,
           roles: xinput.roles,
         }
+        loading.value = true;
         const res = await usuariosService.updateUsuario(upd).then((e) => e).catch((e) => e)
-        console.log(res);
+        // console.log(res);
+        loading.value = false;
         if (res.updateUsuario) router.back()
       } else {
 

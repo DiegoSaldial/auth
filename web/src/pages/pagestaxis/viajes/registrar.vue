@@ -6,23 +6,23 @@
       <div class="row q-gutter-sm justify-center">
 
         <div class="col-xs-12 col-sm-6 col-md-3">
-          <q-input v-model.number="input.origen_lat" step="0.01" type="number" outlined label="origen_lat:" lazy-rules dense :rules="[
+          <q-input v-model.number="input.origen_lat" step="0.000000000000001" type="number" outlined label="origen_lat:" lazy-rules dense @click="selectLoc()" :rules="[
             (v) => (v && v != 0) || 'Dato requerido.',
           ]" />
         </div>
         <div class="col-xs-12 col-sm-6 col-md-3">
-          <q-input v-model.number="input.origen_lon" step="0.01" type="number" outlined label="origen_lon:" lazy-rules dense :rules="[
+          <q-input v-model.number="input.origen_lon" step="0.000000000000001" type="number" outlined label="origen_lon:" lazy-rules dense @click="selectLoc()" :rules="[
             (v) => (v && v != 0) || 'Dato requerido.',
           ]" />
         </div>
         <div class="col-xs-12 col-sm-6 col-md-3">
-          <q-input v-model.number="input.destino_lat" step="0.01" type="number" outlined label="destino_lat:" lazy-rules dense :rules="[
-            (v) => (v !== null && v >= 0) || 'Dato requerido.',
+          <q-input v-model.number="input.destino_lat" step="0.000000000000001" type="number" outlined label="destino_lat:" lazy-rules dense @click="selectLocDes()" clearable :rules="[
+            (v) => (v === null || v === 0 || v !== null) || 'Dato requerido.',
           ]" />
         </div>
         <div class="col-xs-12 col-sm-6 col-md-3">
-          <q-input v-model.number="input.destino_lon" step="0.01" type="number" outlined label="destino_lon:" lazy-rules dense :rules="[
-            (v) => (v !== null && v >= 0) || 'Dato requerido.',
+          <q-input v-model.number="input.destino_lon" step="0.000000000000001" type="number" outlined label="destino_lon:" lazy-rules dense @click="selectLocDes()" clearable :rules="[
+            (v) => (v === null || v === 0 || v !== null) || 'Dato requerido.',
           ]" />
         </div>
 
@@ -68,10 +68,13 @@
       </div>
 
       <div class="row justify-center">
-        <q-btn outline color="green" :loading="store.is_loading_page" :label="id ? 'Guardar Cambios' : 'Registrar'"
+        <q-btn outline color="green" :loading="registrando" :disable="registrando" :label="id ? 'Guardar Cambios' : 'Registrar'"
           size="small" icon="check" class="q-mt-xl" type="submit" />
       </div>
     </q-form>
+
+    <Loca ref="refloca" v-on:select="setPos"/>
+    <Loca ref="reflocades" v-on:select="setPosDes"/>
   </div>
 </template>
 
@@ -86,14 +89,16 @@ import UsuariosService from '../../../services/usuariosService';
 import { pageStore } from '../../../stores/pageStore';
 import { CategoriaVehiculosResponse } from '../../../types/taxis/categoria_vehiculos';
 import { CrearInput, CreateViajes } from '../../../types/taxis/viajes';
+import Loca from './selectLocation.vue'
 
 export default {
   name: 'IndexRoles',
-  components: { Atras },
+  components: { Atras,Loca },
 
   setup() {
     const store = pageStore();
     const loading = ref(false);
+    const registrando = ref(false);
     const router = useRouter();
     const categoriaVServices = new CategoriaVServices();
     const usuariosService = new UsuariosService();
@@ -102,7 +107,9 @@ export default {
     const categorias = ref<CategoriaVehiculosResponse[]>([])
     const usuarios = ref([]);
     const usuario = ref();
-    const id = ref()
+    const id = ref();
+    const refloca = ref();
+    const reflocades = ref();
 
     function onSubmit() {
       console.log('input', input.value);
@@ -116,9 +123,25 @@ export default {
     }
 
     async function registrar(input: CreateViajes) {
+      registrando.value = true;
       const res = await viajesService.createViaje(input).then((e) => e).catch((e) => e)
-      console.log(res);
+      registrando.value = false;
       if (res.createViaje) router.back();
+    }
+
+    function selectLoc(){
+      refloca.value.opendialog(input.value.origen_lat,input.value.origen_lon)
+    }
+    function selectLocDes(){
+      reflocades.value.opendialog(input.value.destino_lat,input.value.destino_lon)
+    }
+    function setPos(pos:any[]){
+      input.value.origen_lat = pos[0];
+      input.value.origen_lon = pos[1];
+    }
+    function setPosDes(pos:any[]){
+      input.value.destino_lat = pos[0];
+      input.value.destino_lon = pos[1];
     }
 
     onMounted(async () => {
@@ -131,14 +154,21 @@ export default {
       loading.value = false
     });
     return {
+      refloca,
+      reflocades,
       store,
       loading,
+      registrando,
       filter: ref(''),
       id,
       input,
       categorias,
       usuarios,
       usuario,
+      setPos,
+      setPosDes,
+      selectLoc,
+      selectLocDes,
       onSubmit,
     };
   },

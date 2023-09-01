@@ -7,6 +7,9 @@ import (
 )
 
 func Crear(db *sql.DB, input model.CreateViajes) (*model.ViajesResponse, error) {
+	if err := checkViajesActivos(db, input.PasajeroID); err != nil {
+		return nil, err
+	}
 	sql := `
 	insert into viajes(pasajero_id,descripcion,origen,destino,categoria_id)
 	values(?,?,POINT(?,?),POINT(?,?),?)
