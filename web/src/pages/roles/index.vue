@@ -15,7 +15,20 @@
         </q-btn-group>
       </template>
 
-
+      <template v-slot:body-cell-permisos="props">
+        <q-td :props="props">
+          <router-link :to="'/adm/roles/permisos?idrol=' + props.row.id + '&n=' + props.row.nombre" class="text-orange">
+            {{ props.row.permisos }}
+          </router-link>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-usuarios="props">
+        <q-td :props="props">
+          <router-link :to="'/adm/roles/usuarios?idrol=' + props.row.id" class="text-orange">
+            {{ props.row.usuarios }}
+          </router-link>
+        </q-td>
+      </template>
 
       <template v-slot:body-cell-estado="props">
         <q-td :props="props">
@@ -33,12 +46,12 @@
           <q-btn color="green-10" square flat icon="more_vert" size="small">
             <q-menu anchor="top right" self="top left">
               <q-list style="min-width: 110px">
-                <q-item clickable v-ripple :to="'/adm/roles/permisos?idrol=' + props.row.id + '&n=' + props.row.nombre">
+                <!-- <q-item clickable v-ripple :to="'/adm/roles/permisos?idrol=' + props.row.id + '&n=' + props.row.nombre">
                   <q-item-section avatar>
                     <q-icon color="primary" name="visibility" right />
                   </q-item-section>
                   <q-item-section>Permisos</q-item-section>
-                </q-item>
+                </q-item> -->
 
                 <q-item clickable v-ripple :to="'/adm/roles/registrar?idrol=' + props.row.id + '&n=' + props.row.nombre">
                   <q-item-section avatar>

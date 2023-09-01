@@ -47,6 +47,8 @@
           </q-item-label>
 
           <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+          <q-separator inset></q-separator>
+          <EssentialLink v-for="link in listApp" :key="link.title" v-bind="link" />
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -66,6 +68,12 @@ import { useRouter } from 'vue-router';
 
 const linksList = [
   {
+    title: 'Inicio',
+    caption: 'Pantalla de inicio',
+    icon: 'home',
+    link: '/adm',
+  },
+  {
     title: 'Usuarios',
     caption: 'Controlar de acceso al sistema',
     icon: 'group',
@@ -77,7 +85,14 @@ const linksList = [
     icon: 'groups',
     link: '/adm/roles',
   },
-
+];
+const listApp = [
+  {
+    title: 'Inicio App Sample',
+    caption: 'Pantalla de inicio',
+    icon: 'home',
+    link: '/adm',
+  },
 ];
 
 export default defineComponent({
@@ -105,6 +120,7 @@ export default defineComponent({
     return {
       store,
       essentialLinks: linksList,
+      listApp,
       leftDrawerOpen,
       datalogin,
       logout,

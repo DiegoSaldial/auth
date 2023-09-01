@@ -3,6 +3,7 @@ package usuarios
 import (
 	"database/sql"
 	"fmt"
+	"inventarios/database/firestore"
 	"inventarios/graph/model"
 	"strings"
 )
@@ -23,9 +24,9 @@ func CreateUsuario(db *sql.DB, input model.NewUsuario) (*model.Usuario, error) {
 		return nil, err
 	}
 
-	sql := "insert into usuarios(nombres,apellidos,username,password,foto_url,telefono,correo,documento,domicilio,fecha_nac) values(?,?,?,?,?,?,?,?,?,?)"
+	sql := "insert into usuarios(nombres,apellidos,username,password,telefono,correo,documento,domicilio,fecha_nac) values(?,?,?,?,?,?,?,?,?)"
 	res, err := tx.Exec(sql,
-		input.Nombres, input.Apellidos, input.Username, input.Password, input.FotoURL, input.Telefono, input.Correo, input.Documento, input.Domicilio, input.FechaNac)
+		input.Nombres, input.Apellidos, input.Username, input.Password, input.Telefono, input.Correo, input.Documento, input.Domicilio, input.FechaNac)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
@@ -52,6 +53,13 @@ func CreateUsuario(db *sql.DB, input model.NewUsuario) (*model.Usuario, error) {
 	if err != nil {
 		tx.Rollback()
 		return nil, err
+	}
+
+	if input.FotoURL != nil {
+		foto_url, er := firestore.SubirImagen(*input.FotoURL, input.Username+".jpg", true)
+		if er == nil {
+			return actualizarFoto(db, foto_url, input.Username)
+		}
 	}
 
 	return usuarioByUname(db, input.Username)

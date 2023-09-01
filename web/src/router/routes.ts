@@ -40,6 +40,10 @@ const routes: RouteRecordRaw[] = [
         path: 'roles/eliminar',
         component: () => import('pages/roles/eliminar.vue'),
       },
+      {
+        path: 'roles/usuarios',
+        component: () => import('pages/roles/usuariosByRol.vue'),
+      },
     ],
   },
 

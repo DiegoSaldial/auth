@@ -38,6 +38,40 @@ export default class UsuarioService {
     );
     return res;
   }
+  async usuariosByRol(rol_id: string) {
+    const store = pageStore();
+    const sql = gql`
+      query usuariosByRol($rol_id: ID!) {
+        usuariosByRol(rol_id: $rol_id) {
+          id
+          nombres
+          apellidos
+          username
+          foto_url
+          telefono
+          correo
+          registrado
+          estado
+          dataname
+          documento
+          fecha_nac
+          domicilio
+          roles {
+            id
+            nombre
+            bit
+          }
+        }
+      }
+    `;
+
+    const res: any = await store.run_graphql(
+      sql,
+      { rol_id: rol_id },
+      { showNotificacion: true, showNotificacionError: true }
+    );
+    return res;
+  }
 
   async usuarioByUsername(username: string) {
     const store = pageStore();

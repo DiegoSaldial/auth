@@ -66,12 +66,12 @@
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md3 q-px-md">
-          <q-file outlined v-model="base64a" label="Foto:" dense accept="image/*" clearable lazy-rules
-            :disable="store.is_loading_page" @update:model-value="onFileChange" :rules="rulesfile" />
+          <q-file outlined v-model="base64a" label="Foto:" dense accept="image/*" clearable lazy-rules :disable="loading"
+            @update:model-value="onFileChange" :rules="rulesfile" />
         </div>
 
         <div class="col-xs-12 col-sm-6 q-px-md">
-          <q-table title="Roles del usuario:" :loading="loading" :rows="roles" :columns="columns" row-key="name"
+          <q-table title="Roles del usuario:" :loading="loading_roles" :rows="roles" :columns="columns" row-key="name"
             hide-pagination :rows-per-page-options="[0]" :filter="filter" class="q-mx-md">
 
             <template v-slot:body-cell-check="props">
@@ -86,7 +86,7 @@
 
 
       <div class="row justify-center">
-        <q-btn outline color="green" :loading="store.is_loading_page" :label="id ? 'Guardar Cambios' : 'Registrar'"
+        <q-btn outline color="green" :loading="loading" :disable="loading" :label="id ? 'Guardar Cambios' : 'Registrar'"
           size="small" icon="check" class="q-mt-xl" type="submit" />
       </div>
     </q-form>
@@ -126,6 +126,7 @@ export default {
 
   setup() {
     const store = pageStore();
+    const loading_roles = ref(false);
     const loading = ref(false);
     const route = useRoute();
     const id = ref()
@@ -183,13 +184,17 @@ export default {
           fecha_nac: xinput.fecha_nac,
           roles: xinput.roles,
         }
+        loading.value = true;
         const res = await usuariosService.updateUsuario(upd).then((e) => e).catch((e) => e)
-        console.log(res);
+        // console.log(res);
+        loading.value = false;
         if (res.updateUsuario) router.back()
       } else {
 
+        loading.value = true;
         const res = await usuariosService.createUsuario(xinput).then((e) => e).catch((e) => e)
-        console.log(res);
+        // console.log(res);
+        loading.value = false;
         if (res.createUsuario) router.back()
       }
     }
@@ -223,7 +228,7 @@ export default {
 
     onMounted(async () => {
       input.value.foto_url = '';
-      loading.value = true;
+      loading_roles.value = true;
       id.value = route.query.iduser;
       const res = await roleservice.roles(false).then((e) => e).catch((e) => e);
       roles.value = res.roles ? res.roles : [];
@@ -247,7 +252,7 @@ export default {
         })
       }
 
-      loading.value = false
+      loading_roles.value = false
 
     });
     return {
@@ -260,6 +265,7 @@ export default {
       roles,
       base64a: ref(null),
       rulesfile,
+      loading_roles,
       generateUser,
       generatePass,
       onSubmit,
