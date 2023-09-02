@@ -38,7 +38,7 @@
     <div class="row justify-center q-gutter-none">
       <div class="col-xs-12 q-px-md">
         <p class="q-mb-none text-center text-green"> {{ viajes.length }} resultados encontrados </p>
-        <div>
+        <div :class="$q.dark.isActive?'darkmapa':''">
           <l-map v-if="showMap" :zoom="zoom" :center="center" :options="mapOptions" style="height: 72vh" >
             <l-tile-layer :url="url" :attribution="attribution"/>
             <div v-for="(alquileres, index) of viajes" :key="index">
@@ -68,6 +68,14 @@
   </q-page>
 </template>
 
+<style>
+  .darkmapa .leaflet-layer,
+  .darkmapa .leaflet-control-zoom-in,
+  .darkmapa .leaflet-control-zoom-out,
+  .darkmapa .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
+</style>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
