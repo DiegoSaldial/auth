@@ -81,6 +81,12 @@ type RolResponse{
   permisos: Int!
   usuarios: Int!
 }
+type RolesUserResponse{
+  id: ID! 
+  nombre: String!
+  bit: Int!
+  permisos: [RolPermiso!]! 
+}
 
 # ==============================================================================
 input NewUsuario { 
@@ -136,6 +142,8 @@ type Query {
   permisos:[RolPermiso!]!
   """ Retorna un listado de los roles registrados """
   roles(lite:Boolean!):[RolResponse!]! 
+  """ Retorna un listado de los roles registrados para un usuario """
+  rolesByUsuario(usuario_id:ID!, permisos: Boolean!):[RolesUserResponse!]! 
   """ Retorna un listado de los usuarios registrados """
   usuarios:[UsuariosResponse!]! 
   """ Retorna un listado de los usuarios segun el rol """

@@ -3,6 +3,8 @@ package viajes
 import (
 	"database/sql"
 	"errors"
+	"fmt"
+	"taxis/database/auth/roles"
 	"taxis/graph/model"
 )
 
@@ -52,4 +54,22 @@ func checkViajesActivos(db *sql.DB, pasajero_id string) error {
 		return errors.New("ya tiene un viaje activo, debe ser finalizado o cancelado antes de realizar una nueva solicitud")
 	}
 	return nil
+}
+
+func checkUserHasPerm(db *sql.DB, usuarioid, permiso string) error {
+	roles, err := roles.ListarRolesByUsuario(db, usuarioid, true)
+	if err != nil {
+		return err
+	}
+
+	for _, rol := range roles {
+		for _, perm := range rol.Permisos {
+			if perm.Metodo == permiso {
+				return nil
+			}
+		}
+	}
+
+	r := fmt.Sprintf("el usuario con ID: %s, no tiene acceso al permiso: %s", usuarioid, permiso)
+	return errors.New(r)
 }
