@@ -105,6 +105,7 @@ type ComplexityRoot struct {
 		Permisos          func(childComplexity int) int
 		PermisosByRol     func(childComplexity int, rolID string) int
 		Roles             func(childComplexity int, lite bool) int
+		RolesByUsuario    func(childComplexity int, usuarioID string, permisos bool) int
 		UsuarioByUsername func(childComplexity int, username string) int
 		Usuarios          func(childComplexity int) int
 		UsuariosByRol     func(childComplexity int, rolID string) int
@@ -128,6 +129,13 @@ type ComplexityRoot struct {
 		Nombre   func(childComplexity int) int
 		Permisos func(childComplexity int) int
 		Usuarios func(childComplexity int) int
+	}
+
+	RolesUserResponse struct {
+		Bit      func(childComplexity int) int
+		ID       func(childComplexity int) int
+		Nombre   func(childComplexity int) int
+		Permisos func(childComplexity int) int
 	}
 
 	Tokens struct {
@@ -218,6 +226,7 @@ type QueryResolver interface {
 	UsuarioByUsername(ctx context.Context, username string) (*model.UsuariosResponse, error)
 	Permisos(ctx context.Context) ([]*model.RolPermiso, error)
 	Roles(ctx context.Context, lite bool) ([]*model.RolResponse, error)
+	RolesByUsuario(ctx context.Context, usuarioID string, permisos bool) ([]*model.RolesUserResponse, error)
 	Usuarios(ctx context.Context) ([]*model.UsuariosResponse, error)
 	UsuariosByRol(ctx context.Context, rolID string) ([]*model.UsuariosResponse, error)
 	PermisosByRol(ctx context.Context, rolID string) ([]*model.RolPermiso, error)
@@ -563,6 +572,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Roles(childComplexity, args["lite"].(bool)), true
 
+	case "Query.rolesByUsuario":
+		if e.complexity.Query.RolesByUsuario == nil {
+			break
+		}
+
+		args, err := ec.field_Query_rolesByUsuario_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.RolesByUsuario(childComplexity, args["usuario_id"].(string), args["permisos"].(bool)), true
+
 	case "Query.usuarioByUsername":
 		if e.complexity.Query.UsuarioByUsername == nil {
 			break
@@ -670,6 +691,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.RolResponse.Usuarios(childComplexity), true
+
+	case "RolesUserResponse.bit":
+		if e.complexity.RolesUserResponse.Bit == nil {
+			break
+		}
+
+		return e.complexity.RolesUserResponse.Bit(childComplexity), true
+
+	case "RolesUserResponse.id":
+		if e.complexity.RolesUserResponse.ID == nil {
+			break
+		}
+
+		return e.complexity.RolesUserResponse.ID(childComplexity), true
+
+	case "RolesUserResponse.nombre":
+		if e.complexity.RolesUserResponse.Nombre == nil {
+			break
+		}
+
+		return e.complexity.RolesUserResponse.Nombre(childComplexity), true
+
+	case "RolesUserResponse.permisos":
+		if e.complexity.RolesUserResponse.Permisos == nil {
+			break
+		}
+
+		return e.complexity.RolesUserResponse.Permisos(childComplexity), true
 
 	case "Tokens.registrado":
 		if e.complexity.Tokens.Registrado == nil {
@@ -1358,6 +1407,30 @@ func (ec *executionContext) field_Query_permisosByRol_args(ctx context.Context, 
 		}
 	}
 	args["rol_id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_rolesByUsuario_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["usuario_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usuario_id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["usuario_id"] = arg0
+	var arg1 bool
+	if tmp, ok := rawArgs["permisos"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("permisos"))
+		arg1, err = ec.unmarshalNBoolean2bool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["permisos"] = arg1
 	return args, nil
 }
 
@@ -3463,6 +3536,71 @@ func (ec *executionContext) fieldContext_Query_roles(ctx context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_rolesByUsuario(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_rolesByUsuario(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().RolesByUsuario(rctx, fc.Args["usuario_id"].(string), fc.Args["permisos"].(bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.RolesUserResponse)
+	fc.Result = res
+	return ec.marshalNRolesUserResponse2ᚕᚖinventariosᚋgraphᚋmodelᚐRolesUserResponseᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_rolesByUsuario(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_RolesUserResponse_id(ctx, field)
+			case "nombre":
+				return ec.fieldContext_RolesUserResponse_nombre(ctx, field)
+			case "bit":
+				return ec.fieldContext_RolesUserResponse_bit(ctx, field)
+			case "permisos":
+				return ec.fieldContext_RolesUserResponse_permisos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type RolesUserResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_rolesByUsuario_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_usuarios(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_usuarios(ctx, field)
 	if err != nil {
@@ -4293,6 +4431,190 @@ func (ec *executionContext) fieldContext_RolResponse_usuarios(ctx context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RolesUserResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.RolesUserResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RolesUserResponse_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RolesUserResponse_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RolesUserResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RolesUserResponse_nombre(ctx context.Context, field graphql.CollectedField, obj *model.RolesUserResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RolesUserResponse_nombre(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Nombre, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RolesUserResponse_nombre(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RolesUserResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RolesUserResponse_bit(ctx context.Context, field graphql.CollectedField, obj *model.RolesUserResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RolesUserResponse_bit(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Bit, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RolesUserResponse_bit(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RolesUserResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RolesUserResponse_permisos(ctx context.Context, field graphql.CollectedField, obj *model.RolesUserResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RolesUserResponse_permisos(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Permisos, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.RolPermiso)
+	fc.Result = res
+	return ec.marshalNRolPermiso2ᚕᚖinventariosᚋgraphᚋmodelᚐRolPermisoᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RolesUserResponse_permisos(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RolesUserResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "metodo":
+				return ec.fieldContext_RolPermiso_metodo(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_RolPermiso_descripcion(ctx, field)
+			case "rol_bits":
+				return ec.fieldContext_RolPermiso_rol_bits(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type RolPermiso", field.Name)
 		},
 	}
 	return fc, nil
@@ -9762,6 +10084,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "rolesByUsuario":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_rolesByUsuario(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "usuarios":
 			field := field
 
@@ -9990,6 +10334,60 @@ func (ec *executionContext) _RolResponse(ctx context.Context, sel ast.SelectionS
 			}
 		case "usuarios":
 			out.Values[i] = ec._RolResponse_usuarios(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var rolesUserResponseImplementors = []string{"RolesUserResponse"}
+
+func (ec *executionContext) _RolesUserResponse(ctx context.Context, sel ast.SelectionSet, obj *model.RolesUserResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, rolesUserResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RolesUserResponse")
+		case "id":
+			out.Values[i] = ec._RolesUserResponse_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "nombre":
+			out.Values[i] = ec._RolesUserResponse_nombre(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "bit":
+			out.Values[i] = ec._RolesUserResponse_bit(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "permisos":
+			out.Values[i] = ec._RolesUserResponse_permisos(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -11069,6 +11467,60 @@ func (ec *executionContext) marshalNRolResponse2ᚖinventariosᚋgraphᚋmodel�
 		return graphql.Null
 	}
 	return ec._RolResponse(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNRolesUserResponse2ᚕᚖinventariosᚋgraphᚋmodelᚐRolesUserResponseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.RolesUserResponse) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNRolesUserResponse2ᚖinventariosᚋgraphᚋmodelᚐRolesUserResponse(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNRolesUserResponse2ᚖinventariosᚋgraphᚋmodelᚐRolesUserResponse(ctx context.Context, sel ast.SelectionSet, v *model.RolesUserResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._RolesUserResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

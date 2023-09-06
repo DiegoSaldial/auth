@@ -144,6 +144,13 @@ type RolResponse struct {
 	Usuarios int    `json:"usuarios"`
 }
 
+type RolesUserResponse struct {
+	ID       string        `json:"id"`
+	Nombre   string        `json:"nombre"`
+	Bit      int           `json:"bit"`
+	Permisos []*RolPermiso `json:"permisos"`
+}
+
 type Tokens struct {
 	Username   string    `json:"username"`
 	Token      string    `json:"token"`

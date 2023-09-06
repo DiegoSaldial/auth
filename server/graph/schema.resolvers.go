@@ -96,6 +96,11 @@ func (r *queryResolver) Roles(ctx context.Context, lite bool) ([]*model.RolRespo
 	return roles.Listar(r.DB, lite)
 }
 
+// RolesByUsuario is the resolver for the rolesByUsuario field.
+func (r *queryResolver) RolesByUsuario(ctx context.Context, usuarioID string, permisos bool) ([]*model.RolesUserResponse, error) {
+	return roles.ListarRolesByUsuario(r.DB, usuarioID, permisos)
+}
+
 // Usuarios is the resolver for the usuarios field.
 func (r *queryResolver) Usuarios(ctx context.Context) ([]*model.UsuariosResponse, error) {
 	data, err := xauth.CtxValueApp(ctx, r.DB, "roles")

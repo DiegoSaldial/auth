@@ -8,6 +8,14 @@ import (
 	"inventarios/graph/model"
 )
 
+func parseURol(rows *sql.Rows, t *model.RolesUserResponse) error {
+	return rows.Scan(
+		&t.ID,
+		&t.Nombre,
+		&t.Bit,
+	)
+}
+
 func parse(rows *sql.Rows, t *model.RolResponse) error {
 	return rows.Scan(
 		&t.ID,
