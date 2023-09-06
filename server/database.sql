@@ -139,6 +139,7 @@ insert into rol_permiso(rol_bits,metodo,descripcion) values
     (5,"usuarioByUsername","Recupera datos de un usuario por su username"),
     (1,"permisos","Recupera la lista de todos los permisos disponibles"),  
     (1,"roles","Recupera la lista de todos los roles disponibles"),  
+    (1,"rolesByUsuario","Recupera la lista de todos los roles disponibles para un usuario"),  
     (1,"usuarios","Recupera la lista de todos los usuarios registrados"),  
     (1,"usuariosByRol","Recupera la lista de todos los usuarios segun un rol"),
     (1,"permisosByRol","Recupera la lista de todos los permisos disponibles por rol"),
