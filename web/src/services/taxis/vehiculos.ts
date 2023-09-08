@@ -103,6 +103,39 @@ export default class VehiculosService {
     return res;
   }
 
+  async vehiculosByCaracteristica(id:string) {
+    const store = pageStore();
+    const sql = gql`
+      query vehiculosByCaracteristica($id:ID!){
+        vehiculosByCaracteristica(id:$id){
+          id
+          placa
+          puertas
+          capacidad
+          descripcion
+          color
+          modelo
+          anio
+          categoria_id
+          foto_url
+          estado
+          registrado
+          conductor_id
+          conductor
+          categoria
+          estado_conductor_vehiculo
+        }
+      }
+    `;
+
+    const res: any = await store.run_graphql(
+      sql,
+      { id:id },
+      { showNotificacion: false, showNotificacionError: true }
+    );
+    return res;
+  }
+
   async createUpdateVehiculo(input:CreateVehiculos) {
     const store = pageStore();
     const sql = gql`

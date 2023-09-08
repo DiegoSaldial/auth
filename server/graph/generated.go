@@ -46,6 +46,13 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	CaracteristicasVehiculosResponse struct {
+		ID        func(childComplexity int) int
+		Nombre    func(childComplexity int) int
+		Registro  func(childComplexity int) int
+		Vehiculos func(childComplexity int) int
+	}
+
 	CategoriaVehiculosResponse struct {
 		Descripcion func(childComplexity int) int
 		ID          func(childComplexity int) int
@@ -76,6 +83,7 @@ type ComplexityRoot struct {
 		AsignarVehiculo               func(childComplexity int, input model.CreateConductorVehiculos) int
 		CancelarViaje                 func(childComplexity int, id string) int
 		CreateRol                     func(childComplexity int, input model.NewRol) int
+		CreateUpdateCaracteristica    func(childComplexity int, input model.NewCaracteristica) int
 		CreateUpdateCategoriaVehiculo func(childComplexity int, input model.CreateCategoriaVehiculos) int
 		CreateUpdateDireccion         func(childComplexity int, input model.CreateDirecciones) int
 		CreateUpdateVehiculo          func(childComplexity int, input model.CreateVehiculos) int
@@ -92,29 +100,33 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		CategoriaVehiculo     func(childComplexity int, id string) int
-		CategoriaVehiculos    func(childComplexity int) int
-		Clientes              func(childComplexity int) int
-		Conductores           func(childComplexity int) int
-		ConductoresByVehiculo func(childComplexity int, vehiculoID string) int
-		DireccionesByUsuario  func(childComplexity int, usuarioID string) int
-		Permisos              func(childComplexity int) int
-		PermisosByRol         func(childComplexity int, rolID string) int
-		Roles                 func(childComplexity int, lite bool) int
-		RolesByUsuario        func(childComplexity int, usuarioID string, permisos bool) int
-		UsuarioByUsername     func(childComplexity int, username string) int
-		Usuarios              func(childComplexity int) int
-		UsuariosByRol         func(childComplexity int, rolID string) int
-		Vehiculo              func(childComplexity int, id string) int
-		Vehiculos             func(childComplexity int) int
-		VehiculosByCategoria  func(childComplexity int, categoriaID string) int
-		VehiculosByConductor  func(childComplexity int, usuarioID string) int
-		ViajesByCategoria     func(childComplexity int, categoriaID string) int
-		ViajesByConductor     func(childComplexity int, usuarioID string) int
-		ViajesByFecha         func(childComplexity int, input model.QueryFechas) int
-		ViajesByPasajero      func(childComplexity int, usuarioID string) int
-		ViajesByUsuario       func(childComplexity int, usuarioID string) int
-		ViajesCercanos        func(childComplexity int, lat float64, lon float64, radioMts int) int
+		Caracteristica            func(childComplexity int, id string) int
+		Caracteristicas           func(childComplexity int) int
+		CaracteristicasByVehiculo func(childComplexity int, id string) int
+		CategoriaVehiculo         func(childComplexity int, id string) int
+		CategoriaVehiculos        func(childComplexity int) int
+		Clientes                  func(childComplexity int) int
+		Conductores               func(childComplexity int) int
+		ConductoresByVehiculo     func(childComplexity int, vehiculoID string) int
+		DireccionesByUsuario      func(childComplexity int, usuarioID string) int
+		Permisos                  func(childComplexity int) int
+		PermisosByRol             func(childComplexity int, rolID string) int
+		Roles                     func(childComplexity int, lite bool) int
+		RolesByUsuario            func(childComplexity int, usuarioID string, permisos bool) int
+		UsuarioByUsername         func(childComplexity int, username string) int
+		Usuarios                  func(childComplexity int) int
+		UsuariosByRol             func(childComplexity int, rolID string) int
+		Vehiculo                  func(childComplexity int, id string) int
+		Vehiculos                 func(childComplexity int) int
+		VehiculosByCaracteristica func(childComplexity int, id string) int
+		VehiculosByCategoria      func(childComplexity int, categoriaID string) int
+		VehiculosByConductor      func(childComplexity int, usuarioID string) int
+		ViajesByCategoria         func(childComplexity int, categoriaID string) int
+		ViajesByConductor         func(childComplexity int, usuarioID string) int
+		ViajesByFecha             func(childComplexity int, input model.QueryFechas) int
+		ViajesByPasajero          func(childComplexity int, usuarioID string) int
+		ViajesByUsuario           func(childComplexity int, usuarioID string) int
+		ViajesCercanos            func(childComplexity int, lat float64, lon float64, radioMts int) int
 	}
 
 	Rol struct {
@@ -263,6 +275,7 @@ type MutationResolver interface {
 	CancelarViaje(ctx context.Context, id string) (*model.ViajesResponse, error)
 	FinalizarViaje(ctx context.Context, id string) (*model.ViajesResponse, error)
 	SetUbicacionViaje(ctx context.Context, input model.CreateViajesLocations) (*model.ViajesLocations, error)
+	CreateUpdateCaracteristica(ctx context.Context, input model.NewCaracteristica) (*model.CaracteristicasVehiculosResponse, error)
 }
 type QueryResolver interface {
 	UsuarioByUsername(ctx context.Context, username string) (*model.UsuariosResponse, error)
@@ -279,6 +292,7 @@ type QueryResolver interface {
 	Vehiculo(ctx context.Context, id string) (*model.VehiculosResponse, error)
 	VehiculosByCategoria(ctx context.Context, categoriaID string) ([]*model.VehiculosResponse, error)
 	VehiculosByConductor(ctx context.Context, usuarioID string) ([]*model.VehiculosResponse, error)
+	VehiculosByCaracteristica(ctx context.Context, id string) ([]*model.VehiculosResponse, error)
 	ConductoresByVehiculo(ctx context.Context, vehiculoID string) ([]*model.UsuariosResponse, error)
 	Conductores(ctx context.Context) ([]*model.UsuariosResponse, error)
 	Clientes(ctx context.Context) ([]*model.UsuariosResponse, error)
@@ -288,6 +302,9 @@ type QueryResolver interface {
 	ViajesByConductor(ctx context.Context, usuarioID string) ([]*model.ViajesResponse, error)
 	ViajesByCategoria(ctx context.Context, categoriaID string) ([]*model.ViajesResponse, error)
 	ViajesByFecha(ctx context.Context, input model.QueryFechas) ([]*model.ViajesResponse, error)
+	Caracteristicas(ctx context.Context) ([]*model.CaracteristicasVehiculosResponse, error)
+	Caracteristica(ctx context.Context, id string) (*model.CaracteristicasVehiculosResponse, error)
+	CaracteristicasByVehiculo(ctx context.Context, id string) ([]*model.CaracteristicasVehiculosResponse, error)
 }
 
 type executableSchema struct {
@@ -304,6 +321,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "CaracteristicasVehiculosResponse.id":
+		if e.complexity.CaracteristicasVehiculosResponse.ID == nil {
+			break
+		}
+
+		return e.complexity.CaracteristicasVehiculosResponse.ID(childComplexity), true
+
+	case "CaracteristicasVehiculosResponse.nombre":
+		if e.complexity.CaracteristicasVehiculosResponse.Nombre == nil {
+			break
+		}
+
+		return e.complexity.CaracteristicasVehiculosResponse.Nombre(childComplexity), true
+
+	case "CaracteristicasVehiculosResponse.registro":
+		if e.complexity.CaracteristicasVehiculosResponse.Registro == nil {
+			break
+		}
+
+		return e.complexity.CaracteristicasVehiculosResponse.Registro(childComplexity), true
+
+	case "CaracteristicasVehiculosResponse.vehiculos":
+		if e.complexity.CaracteristicasVehiculosResponse.Vehiculos == nil {
+			break
+		}
+
+		return e.complexity.CaracteristicasVehiculosResponse.Vehiculos(childComplexity), true
 
 	case "CategoriaVehiculosResponse.descripcion":
 		if e.complexity.CategoriaVehiculosResponse.Descripcion == nil {
@@ -465,6 +510,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateRol(childComplexity, args["input"].(model.NewRol)), true
 
+	case "Mutation.createUpdateCaracteristica":
+		if e.complexity.Mutation.CreateUpdateCaracteristica == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createUpdateCaracteristica_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateUpdateCaracteristica(childComplexity, args["input"].(model.NewCaracteristica)), true
+
 	case "Mutation.createUpdateCategoriaVehiculo":
 		if e.complexity.Mutation.CreateUpdateCategoriaVehiculo == nil {
 			break
@@ -621,6 +678,37 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UseRol(childComplexity, args["username"].(string), args["password"].(string), args["rol_id"].(string)), true
 
+	case "Query.caracteristica":
+		if e.complexity.Query.Caracteristica == nil {
+			break
+		}
+
+		args, err := ec.field_Query_caracteristica_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Caracteristica(childComplexity, args["id"].(string)), true
+
+	case "Query.caracteristicas":
+		if e.complexity.Query.Caracteristicas == nil {
+			break
+		}
+
+		return e.complexity.Query.Caracteristicas(childComplexity), true
+
+	case "Query.caracteristicasByVehiculo":
+		if e.complexity.Query.CaracteristicasByVehiculo == nil {
+			break
+		}
+
+		args, err := ec.field_Query_caracteristicasByVehiculo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.CaracteristicasByVehiculo(childComplexity, args["id"].(string)), true
+
 	case "Query.categoria_vehiculo":
 		if e.complexity.Query.CategoriaVehiculo == nil {
 			break
@@ -770,6 +858,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Vehiculos(childComplexity), true
+
+	case "Query.vehiculosByCaracteristica":
+		if e.complexity.Query.VehiculosByCaracteristica == nil {
+			break
+		}
+
+		args, err := ec.field_Query_vehiculosByCaracteristica_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.VehiculosByCaracteristica(childComplexity, args["id"].(string)), true
 
 	case "Query.vehiculosByCategoria":
 		if e.complexity.Query.VehiculosByCategoria == nil {
@@ -1539,6 +1639,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateVehiculos,
 		ec.unmarshalInputCreateViajes,
 		ec.unmarshalInputCreateViajesLocations,
+		ec.unmarshalInputNewCaracteristica,
 		ec.unmarshalInputNewRol,
 		ec.unmarshalInputNewUsuario,
 		ec.unmarshalInputQueryFechas,
@@ -1722,6 +1823,21 @@ func (ec *executionContext) field_Mutation_createRol_args(ctx context.Context, r
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewRol2taxisᚋgraphᚋmodelᚐNewRol(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createUpdateCaracteristica_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewCaracteristica
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewCaracteristica2taxisᚋgraphᚋmodelᚐNewCaracteristica(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1967,6 +2083,36 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_caracteristica_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_caracteristicasByVehiculo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_categoria_vehiculo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2097,6 +2243,21 @@ func (ec *executionContext) field_Query_usuariosByRol_args(ctx context.Context, 
 }
 
 func (ec *executionContext) field_Query_vehiculo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_vehiculosByCaracteristica_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -2286,6 +2447,182 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _CaracteristicasVehiculosResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.CaracteristicasVehiculosResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CaracteristicasVehiculosResponse_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CaracteristicasVehiculosResponse_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CaracteristicasVehiculosResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CaracteristicasVehiculosResponse_nombre(ctx context.Context, field graphql.CollectedField, obj *model.CaracteristicasVehiculosResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CaracteristicasVehiculosResponse_nombre(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Nombre, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CaracteristicasVehiculosResponse_nombre(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CaracteristicasVehiculosResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CaracteristicasVehiculosResponse_registro(ctx context.Context, field graphql.CollectedField, obj *model.CaracteristicasVehiculosResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CaracteristicasVehiculosResponse_registro(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Registro, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CaracteristicasVehiculosResponse_registro(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CaracteristicasVehiculosResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CaracteristicasVehiculosResponse_vehiculos(ctx context.Context, field graphql.CollectedField, obj *model.CaracteristicasVehiculosResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CaracteristicasVehiculosResponse_vehiculos(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Vehiculos, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CaracteristicasVehiculosResponse_vehiculos(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CaracteristicasVehiculosResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _CategoriaVehiculosResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.CategoriaVehiculosResponse) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_CategoriaVehiculosResponse_id(ctx, field)
@@ -4232,6 +4569,71 @@ func (ec *executionContext) fieldContext_Mutation_setUbicacionViaje(ctx context.
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createUpdateCaracteristica(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createUpdateCaracteristica(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateUpdateCaracteristica(rctx, fc.Args["input"].(model.NewCaracteristica))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.CaracteristicasVehiculosResponse)
+	fc.Result = res
+	return ec.marshalNCaracteristicasVehiculosResponse2ᚖtaxisᚋgraphᚋmodelᚐCaracteristicasVehiculosResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createUpdateCaracteristica(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_id(ctx, field)
+			case "nombre":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_nombre(ctx, field)
+			case "registro":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_registro(ctx, field)
+			case "vehiculos":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_vehiculos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CaracteristicasVehiculosResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createUpdateCaracteristica_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_usuarioByUsername(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_usuarioByUsername(ctx, field)
 	if err != nil {
@@ -5260,6 +5662,95 @@ func (ec *executionContext) fieldContext_Query_vehiculosByConductor(ctx context.
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_vehiculosByCaracteristica(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_vehiculosByCaracteristica(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().VehiculosByCaracteristica(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.VehiculosResponse)
+	fc.Result = res
+	return ec.marshalNVehiculosResponse2ᚕᚖtaxisᚋgraphᚋmodelᚐVehiculosResponseᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_vehiculosByCaracteristica(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_VehiculosResponse_id(ctx, field)
+			case "placa":
+				return ec.fieldContext_VehiculosResponse_placa(ctx, field)
+			case "puertas":
+				return ec.fieldContext_VehiculosResponse_puertas(ctx, field)
+			case "capacidad":
+				return ec.fieldContext_VehiculosResponse_capacidad(ctx, field)
+			case "descripcion":
+				return ec.fieldContext_VehiculosResponse_descripcion(ctx, field)
+			case "color":
+				return ec.fieldContext_VehiculosResponse_color(ctx, field)
+			case "modelo":
+				return ec.fieldContext_VehiculosResponse_modelo(ctx, field)
+			case "anio":
+				return ec.fieldContext_VehiculosResponse_anio(ctx, field)
+			case "categoria_id":
+				return ec.fieldContext_VehiculosResponse_categoria_id(ctx, field)
+			case "foto_url":
+				return ec.fieldContext_VehiculosResponse_foto_url(ctx, field)
+			case "estado":
+				return ec.fieldContext_VehiculosResponse_estado(ctx, field)
+			case "registrado":
+				return ec.fieldContext_VehiculosResponse_registrado(ctx, field)
+			case "conductor_id":
+				return ec.fieldContext_VehiculosResponse_conductor_id(ctx, field)
+			case "conductor":
+				return ec.fieldContext_VehiculosResponse_conductor(ctx, field)
+			case "categoria":
+				return ec.fieldContext_VehiculosResponse_categoria(ctx, field)
+			case "estado_conductor_vehiculo":
+				return ec.fieldContext_VehiculosResponse_estado_conductor_vehiculo(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type VehiculosResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_vehiculosByCaracteristica_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_conductoresByVehiculo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_conductoresByVehiculo(ctx, field)
 	if err != nil {
@@ -5985,6 +6476,190 @@ func (ec *executionContext) fieldContext_Query_viajesByFecha(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_viajesByFecha_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_caracteristicas(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_caracteristicas(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Caracteristicas(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.CaracteristicasVehiculosResponse)
+	fc.Result = res
+	return ec.marshalNCaracteristicasVehiculosResponse2ᚕᚖtaxisᚋgraphᚋmodelᚐCaracteristicasVehiculosResponseᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_caracteristicas(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_id(ctx, field)
+			case "nombre":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_nombre(ctx, field)
+			case "registro":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_registro(ctx, field)
+			case "vehiculos":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_vehiculos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CaracteristicasVehiculosResponse", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_caracteristica(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_caracteristica(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Caracteristica(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.CaracteristicasVehiculosResponse)
+	fc.Result = res
+	return ec.marshalNCaracteristicasVehiculosResponse2ᚖtaxisᚋgraphᚋmodelᚐCaracteristicasVehiculosResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_caracteristica(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_id(ctx, field)
+			case "nombre":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_nombre(ctx, field)
+			case "registro":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_registro(ctx, field)
+			case "vehiculos":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_vehiculos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CaracteristicasVehiculosResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_caracteristica_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_caracteristicasByVehiculo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_caracteristicasByVehiculo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().CaracteristicasByVehiculo(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.CaracteristicasVehiculosResponse)
+	fc.Result = res
+	return ec.marshalNCaracteristicasVehiculosResponse2ᚕᚖtaxisᚋgraphᚋmodelᚐCaracteristicasVehiculosResponseᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_caracteristicasByVehiculo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_id(ctx, field)
+			case "nombre":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_nombre(ctx, field)
+			case "registro":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_registro(ctx, field)
+			case "vehiculos":
+				return ec.fieldContext_CaracteristicasVehiculosResponse_vehiculos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CaracteristicasVehiculosResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_caracteristicasByVehiculo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12142,7 +12817,7 @@ func (ec *executionContext) unmarshalInputCreateVehiculos(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "placa", "puertas", "capacidad", "descripcion", "color", "modelo", "anio", "categoria_id", "foto_url"}
+	fieldsInOrder := [...]string{"id", "placa", "puertas", "capacidad", "descripcion", "color", "modelo", "anio", "categoria_id", "foto_url", "caracteristicas"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -12239,6 +12914,15 @@ func (ec *executionContext) unmarshalInputCreateVehiculos(ctx context.Context, o
 				return it, err
 			}
 			it.FotoURL = data
+		case "caracteristicas":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("caracteristicas"))
+			data, err := ec.unmarshalNID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Caracteristicas = data
 		}
 	}
 
@@ -12369,6 +13053,44 @@ func (ec *executionContext) unmarshalInputCreateViajesLocations(ctx context.Cont
 				return it, err
 			}
 			it.Longitud = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputNewCaracteristica(ctx context.Context, obj interface{}) (model.NewCaracteristica, error) {
+	var it model.NewCaracteristica
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "nombre"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "nombre":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nombre"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Nombre = data
 		}
 	}
 
@@ -12762,6 +13484,60 @@ func (ec *executionContext) unmarshalInputUpdateUsuario(ctx context.Context, obj
 
 // region    **************************** object.gotpl ****************************
 
+var caracteristicasVehiculosResponseImplementors = []string{"CaracteristicasVehiculosResponse"}
+
+func (ec *executionContext) _CaracteristicasVehiculosResponse(ctx context.Context, sel ast.SelectionSet, obj *model.CaracteristicasVehiculosResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, caracteristicasVehiculosResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CaracteristicasVehiculosResponse")
+		case "id":
+			out.Values[i] = ec._CaracteristicasVehiculosResponse_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "nombre":
+			out.Values[i] = ec._CaracteristicasVehiculosResponse_nombre(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "registro":
+			out.Values[i] = ec._CaracteristicasVehiculosResponse_registro(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "vehiculos":
+			out.Values[i] = ec._CaracteristicasVehiculosResponse_vehiculos(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var categoriaVehiculosResponseImplementors = []string{"CategoriaVehiculosResponse"}
 
 func (ec *executionContext) _CategoriaVehiculosResponse(ctx context.Context, sel ast.SelectionSet, obj *model.CategoriaVehiculosResponse) graphql.Marshaler {
@@ -13078,6 +13854,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "setUbicacionViaje":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_setUbicacionViaje(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createUpdateCaracteristica":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createUpdateCaracteristica(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -13432,6 +14215,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "vehiculosByCaracteristica":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_vehiculosByCaracteristica(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "conductoresByVehiculo":
 			field := field
 
@@ -13618,6 +14423,72 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_viajesByFecha(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "caracteristicas":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_caracteristicas(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "caracteristica":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_caracteristica(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "caracteristicasByVehiculo":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_caracteristicasByVehiculo(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -14777,6 +15648,64 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNCaracteristicasVehiculosResponse2taxisᚋgraphᚋmodelᚐCaracteristicasVehiculosResponse(ctx context.Context, sel ast.SelectionSet, v model.CaracteristicasVehiculosResponse) graphql.Marshaler {
+	return ec._CaracteristicasVehiculosResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNCaracteristicasVehiculosResponse2ᚕᚖtaxisᚋgraphᚋmodelᚐCaracteristicasVehiculosResponseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CaracteristicasVehiculosResponse) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNCaracteristicasVehiculosResponse2ᚖtaxisᚋgraphᚋmodelᚐCaracteristicasVehiculosResponse(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNCaracteristicasVehiculosResponse2ᚖtaxisᚋgraphᚋmodelᚐCaracteristicasVehiculosResponse(ctx context.Context, sel ast.SelectionSet, v *model.CaracteristicasVehiculosResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._CaracteristicasVehiculosResponse(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNCategoriaVehiculosResponse2taxisᚋgraphᚋmodelᚐCategoriaVehiculosResponse(ctx context.Context, sel ast.SelectionSet, v model.CategoriaVehiculosResponse) graphql.Marshaler {
 	return ec._CategoriaVehiculosResponse(ctx, sel, &v)
 }
@@ -15012,6 +15941,11 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNNewCaracteristica2taxisᚋgraphᚋmodelᚐNewCaracteristica(ctx context.Context, v interface{}) (model.NewCaracteristica, error) {
+	res, err := ec.unmarshalInputNewCaracteristica(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNNewRol2taxisᚋgraphᚋmodelᚐNewRol(ctx context.Context, v interface{}) (model.NewRol, error) {

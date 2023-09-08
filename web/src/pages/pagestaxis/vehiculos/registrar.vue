@@ -59,11 +59,23 @@
                 :disable="store.is_loading_page" @update:model-value="onFileChange" :rules="rulesfile" />
         </div>
 
-        <div class="col-xs-12 col-sm-6">
+        <div class="col-xs-12 col-sm-9">
           <q-input v-model.trim="input.descripcion" outlined label="descripcion:" lazy-rules dense type="textarea" :rules="[
             (v) => (v && v.length > 0) || 'Dato requerido.',
             (v: any) => (v && v.length < 250) || '250 max permitido.',
           ]" />
+        </div>
+
+        <div class="col-xs-12 col-sm-9">
+          <q-table
+            flat bordered
+            title="Caracteristicas"
+            :rows="caracteristicas"
+            :columns="columns"
+            row-key="id"
+            selection="multiple"
+            v-model:selected="selected"
+          />
         </div>
       </div>
 
@@ -84,9 +96,16 @@ import { useRoute, useRouter } from 'vue-router';
 import Atras from '../../utils/header-back.vue';
 import CategoriaVServices from '../../../services/taxis/categoria_vehiculos';
 import VehiculosServices from '../../../services/taxis/vehiculos';
+import CaracteristicasServices from '../../../services/taxis/caracteristicas_vehiculo';
 import { pageStore } from '../../../stores/pageStore';
 import { CreateVehiculos, CreateVehiculosInput } from '../../../types/taxis/vehiculos';
 import { CategoriaVehiculosResponse } from '../../../types/taxis/categoria_vehiculos';
+import { CaractericasVehiculosResponse } from '../../../types/taxis/caracteristicas_vehiculo';
+
+const columns:any[] = [
+  { name: 'id', label: 'ID', field: 'id', sortable: true },
+  { name: 'nombre', label: 'Caracteristica', field: 'nombre', sortable: true }
+];
 
 export default {
   name: 'IndexRoles',
@@ -99,15 +118,22 @@ export default {
     const router = useRouter();
     const categoriaVServices = new CategoriaVServices();
     const vehiculosServices = new VehiculosServices();
+    const caracteristicasServices = new CaracteristicasServices();
     const input = ref<CreateVehiculos>(CreateVehiculosInput);
     const categorias = ref<CategoriaVehiculosResponse[]>([])
+    const caracteristicas = ref<CaractericasVehiculosResponse[]>([])
+    const selected = ref([])
     const id = ref()
 
     function onSubmit() {
       console.log('input', input.value);
       if(input.value) {
+        const ids = selected.value.map((item:any) => item.id);
+        input.value.caracteristicas = ids;
+
         const data:CreateVehiculos = Object.assign({},input.value)
         if(id.value) data.id = id.value;
+
         const cate: any = JSON.parse(JSON.stringify(input.value.categoria_id))
         data.categoria_id = cate.id;
         registrar(data);
@@ -154,7 +180,14 @@ export default {
       const cvs = await categoriaVServices.categoria_vehiculos().then((e) => e).catch((e) => e);
       categorias.value = cvs.categoria_vehiculos;
 
+      const caras = await caracteristicasServices.caracteristicas().then((e) => e).catch((e) => e);
+      caracteristicas.value = caras.caracteristicas;
+
+
       if (id.value) {
+        const adds = await caracteristicasServices.caracteristicasByVehiculo('' + id.value).then((e) => e).catch((e) => e);
+        selected.value = adds.caracteristicasByVehiculo;
+
         const resr = await vehiculosServices.vehiculo('' + id.value).then((e) => e).catch((e) => e);
         input.value = resr.vehiculo;
         const cate:any = categorias.value.find(c=>c.id==input.value.categoria_id)
@@ -169,7 +202,10 @@ export default {
       id,
       input,
       categorias,
+      caracteristicas,
       rulesfile,
+      selected,
+      columns,
       filter: ref(''),
       base64a: ref(null),
       onSubmit,

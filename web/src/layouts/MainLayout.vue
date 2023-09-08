@@ -87,7 +87,7 @@ const linksList = [
 ];
 
 const listApp = [
-{
+  {
     title: 'Categorias Veh.',
     caption: 'Categoria de vehiculos',
     icon: 'category',
@@ -98,6 +98,12 @@ const listApp = [
     caption: 'Vehiculos registrados en el sistema',
     icon: 'local_taxi',
     link: '/adm/vehiculos',
+  },
+  {
+    title: 'Caracteristicas Veh.',
+    caption: 'Caracteristicas de vehiculos',
+    icon: 'local_shipping',
+    link: '/adm/caracteristicas',
   },
   {
     title: 'Conductores',

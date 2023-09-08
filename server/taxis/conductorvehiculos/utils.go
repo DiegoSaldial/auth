@@ -2,6 +2,9 @@ package conductorvehiculos
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
+	"taxis/database/auth/roles"
 	"taxis/graph/model"
 )
 
@@ -59,4 +62,22 @@ func hayOtrosActivos(db *sql.DB, usuario string) int {
 	sql := `select count(usuario_id) from conductor_vehiculos where estado=1 && usuario_id = ?`
 	db.QueryRow(sql, usuario).Scan(&existe)
 	return existe
+}
+
+func checkUserHasPerm(db *sql.DB, usuarioid, permiso string) error {
+	roles, err := roles.ListarRolesByUsuario(db, usuarioid, true)
+	if err != nil {
+		return err
+	}
+
+	for _, rol := range roles {
+		for _, perm := range rol.Permisos {
+			if perm.Metodo == permiso {
+				return nil
+			}
+		}
+	}
+
+	r := fmt.Sprintf("el usuario con ID: %s, no tiene acceso al permiso: %s", usuarioid, permiso)
+	return errors.New(r)
 }

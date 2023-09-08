@@ -119,6 +119,18 @@ const routes: RouteRecordRaw[] = [
         path: 'viajes/viajesByCategoria',
         component: () => import('pages/pagestaxis/viajes/viajesByCategoria.vue'),
       },
+      {
+        path: 'caracteristicas/',
+        component: () => import('pages/pagestaxis/caracteristicasvehiculo/index.vue'),
+      },
+      {
+        path: 'caracteristicas/registrar',
+        component: () => import('pages/pagestaxis/caracteristicasvehiculo/registrar.vue'),
+      },
+      {
+        path: 'caracteristicas/vehiculosByCaracteristica',
+        component: () => import('pages/pagestaxis/caracteristicasvehiculo/vehiculosByCaracteristica.vue'),
+      },
     ],
   },
 

@@ -2,6 +2,7 @@ package vehiculos
 
 import (
 	"database/sql"
+	"errors"
 	"taxis/graph/model"
 )
 
@@ -45,6 +46,21 @@ func parse2(row *sql.Row, t *model.VehiculosResponse) error {
 		&t.Categoria,
 		&t.EstadoConductorVehiculo,
 	)
+}
+
+func verificarPlacaUnica(db *sql.DB, placa string, id *string) error {
+	tam := 0
+	sql := `select count(id) from vehiculos where placa=?`
+	if id != nil {
+		sql += ` and id != ?`
+		db.QueryRow(sql, placa, id).Scan(&tam)
+	} else {
+		db.QueryRow(sql, placa).Scan(&tam)
+	}
+	if tam > 0 {
+		return errors.New("Placa ya registrada para otro vehiculo")
+	}
+	return nil
 }
 
 func getSqlListar() string {
@@ -208,6 +224,55 @@ func getSqlByID() string {
 	LEFT JOIN usuarios u ON cv.usuario_id = u.id
 	JOIN categoria_vehiculos cvf ON v.categoria_id = cvf.id
 	where v.id = ?
+	`
+	return sql
+}
+
+func getSqlByCaracteristica() string {
+	sql := `
+	SELECT
+		v.id,
+		v.placa,
+		v.puertas,
+		v.capacidad,
+		v.descripcion,
+		v.color,
+		v.modelo,
+		v.anio,
+		v.categoria_id,
+		v.foto_url,
+		v.estado,
+		v.registrado,
+		u.id AS conductor_id,
+		CONCAT(u.nombres,' ',u.apellidos) AS ultimo_conductor,
+		cvf.nombre AS categoria_vehiculo,
+		cv.estado AS estado_conductor_vehiculo
+	FROM
+		vehiculos v
+	LEFT JOIN (
+		SELECT
+			cv1.vehiculo_id,
+			cv1.usuario_id,
+			cv1.registrado,
+			cv1.estado
+		FROM
+			conductor_vehiculos cv1
+		
+	) cv ON v.id = cv.vehiculo_id
+	LEFT JOIN usuarios u ON cv.usuario_id = u.id
+	JOIN categoria_vehiculos cvf ON v.categoria_id = cvf.id
+	LEFT JOIN (
+		SELECT
+			cav.vehiculo_id,
+			cav.caracteristica_id,
+			cav.registrado
+		FROM
+			caracteristicas_vehiculo cav
+		
+	) cav ON v.id = cav.vehiculo_id
+	where cav.caracteristica_id = ? 
+	GROUP BY v.id
+	ORDER BY v.id desc
 	`
 	return sql
 }

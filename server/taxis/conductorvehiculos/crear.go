@@ -8,6 +8,9 @@ import (
 )
 
 func Crear(db *sql.DB, input model.CreateConductorVehiculos) (*model.ConductorVehiculos, error) {
+	if err := checkUserHasPerm(db, input.UsuarioID, "aceptarViaje"); err != nil {
+		return nil, err
+	}
 	hayOtros := hayOtrosActivos(db, input.UsuarioID)
 	if hayOtros > 0 {
 		text := fmt.Sprintf("no puede ser conductor en mas de 1 vehiculo a la ves, quite de los demas [%d]", hayOtros)

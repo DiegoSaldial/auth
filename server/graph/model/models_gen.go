@@ -6,6 +6,13 @@ import (
 	"time"
 )
 
+type CaracteristicasVehiculosResponse struct {
+	ID        string    `json:"id"`
+	Nombre    string    `json:"nombre"`
+	Registro  time.Time `json:"registro"`
+	Vehiculos int       `json:"vehiculos"`
+}
+
 type CategoriaVehiculosResponse struct {
 	ID          string `json:"id"`
 	Nombre      string `json:"nombre"`
@@ -41,16 +48,17 @@ type CreateDirecciones struct {
 }
 
 type CreateVehiculos struct {
-	ID          *string `json:"id,omitempty"`
-	Placa       string  `json:"placa"`
-	Puertas     int     `json:"puertas"`
-	Capacidad   int     `json:"capacidad"`
-	Descripcion string  `json:"descripcion"`
-	Color       string  `json:"color"`
-	Modelo      string  `json:"modelo"`
-	Anio        int     `json:"anio"`
-	CategoriaID string  `json:"categoria_id"`
-	FotoURL     *string `json:"foto_url,omitempty"`
+	ID              *string  `json:"id,omitempty"`
+	Placa           string   `json:"placa"`
+	Puertas         int      `json:"puertas"`
+	Capacidad       int      `json:"capacidad"`
+	Descripcion     string   `json:"descripcion"`
+	Color           string   `json:"color"`
+	Modelo          string   `json:"modelo"`
+	Anio            int      `json:"anio"`
+	CategoriaID     string   `json:"categoria_id"`
+	FotoURL         *string  `json:"foto_url,omitempty"`
+	Caracteristicas []string `json:"caracteristicas"`
 }
 
 type CreateViajes struct {
@@ -78,6 +86,11 @@ type Direcciones struct {
 	Estado      bool      `json:"estado"`
 	UsuarioID   string    `json:"usuario_id"`
 	Registrado  time.Time `json:"registrado"`
+}
+
+type NewCaracteristica struct {
+	ID     *string `json:"id,omitempty"`
+	Nombre string  `json:"nombre"`
 }
 
 type NewRol struct {

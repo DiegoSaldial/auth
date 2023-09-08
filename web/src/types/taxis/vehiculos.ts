@@ -9,6 +9,7 @@ export interface CreateVehiculos {
   anio: number;
   categoria_id: string;
   foto_url: string;
+  caracteristicas: string[];
 }
 
 export const CreateVehiculosInput: CreateVehiculos = {
@@ -22,6 +23,7 @@ export const CreateVehiculosInput: CreateVehiculos = {
   anio: 0,
   categoria_id: '',
   foto_url: '',
+  caracteristicas:[]
 }
 
 export interface CreateConductorVehiculos {

@@ -79,3 +79,23 @@ func ListarByConductor(db *sql.DB, userid string) ([]*model.VehiculosResponse, e
 	}
 	return vs, nil
 }
+
+func ListarByCaracteristica(db *sql.DB, caracteristica_id string) ([]*model.VehiculosResponse, error) {
+	sql := getSqlByCaracteristica()
+	res, err := db.Query(sql, caracteristica_id)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Close()
+
+	vs := []*model.VehiculosResponse{}
+	for res.Next() {
+		v := model.VehiculosResponse{}
+		er := parse(res, &v)
+		if er != nil {
+			return nil, er
+		}
+		vs = append(vs, &v)
+	}
+	return vs, nil
+}

@@ -61,6 +61,12 @@ type ViajesLocations {
     registrado: Time!
 }
 
+# type Caracteristicas {
+#   id: ID!
+#   nombre: String!
+#   registrado: Time!
+# }
+
 # ============================================================
 # ============================================================
 # ============================================================
@@ -107,6 +113,13 @@ type ViajesResponse {
     conductor_username: ID
 }
 
+type CaracteristicasVehiculosResponse {
+    id: ID!
+    nombre: String!
+    registro: Time! 
+    vehiculos: Int!
+}
+
 # ============================================================
 # ============================================================
 # ============================================================
@@ -137,6 +150,7 @@ input CreateVehiculos {
     anio: Int!
     categoria_id: ID!
     foto_url: String 
+    caracteristicas:[ID!]!
 }
 
 input CreateConductorVehiculos {
@@ -166,6 +180,11 @@ input QueryFechas {
     fecha_fin: String!
     include_disponibles: Boolean!
 }
+
+input NewCaracteristica { 
+  id: ID
+  nombre: String! 
+} 
 
 # ============================================================
 # ============================================================

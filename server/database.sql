@@ -90,6 +90,20 @@ create table `conductor_vehiculos`(
     primary key(`usuario_id`, `vehiculo_id`)
 );
 
+create table `caracteristicas`(
+    `id` integer unsigned not null auto_increment primary key, 
+    `nombre` varchar(30) not null UNIQUE,
+    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00')
+);
+
+create table `caracteristicas_vehiculo`(
+    `caracteristica_id` integer unsigned not null,
+    `vehiculo_id` integer unsigned not null,
+    `registrado` datetime not null default CONVERT_TZ(NOW(), @@session.time_zone, '-4:00'),
+    foreign key(`caracteristica_id`) references `caracteristicas`(`id`),
+    foreign key(`vehiculo_id`) references `vehiculos`(`id`)
+);
+
 create table `viajes`(
     `id` integer unsigned not null auto_increment primary key, 
     `pasajero_id` integer unsigned not null,
@@ -158,6 +172,7 @@ insert into rol_permiso(rol_bits,metodo,descripcion) values
     (1,"vehiculo","Recupera la informacion de un vehiculo"),
     (1,"vehiculosByCategoria","Recupera la lista de todos los vehiculos de una categoria"), 
     (1,"vehiculosByConductor","Recupera la lista de todos los vehiculos de un conductor"), 
+    (1,"vehiculosByCaracteristica","Recupera la lista de todos los vehiculos de un caracteristica"), 
     (1,"conductoresByVehiculo","Recupera la lista de todos los conductores por vehiculo"),
     (1,"conductores","Recupera la lista de todos los conductores registrados"),
     (1,"clientes","Recupera la lista de todos los clientes registrados"),
@@ -176,6 +191,10 @@ insert into rol_permiso(rol_bits,metodo,descripcion) values
     (1,"aceptarViaje","El conductor acepta el viaje"),
     (1,"cancelarViaje","El conductor cancela el viaje asignado"),
     (1,"finalizarViaje","El cliente finaliza su viaje"),
+    (1,"createUpdateCaracteristica","Crear y/o actualizar una caracteristica de los vehiculos"),
+    (1,"caracteristicas","listar las caracteristicas de los vehiculos"),
+    (1,"caracteristicasByVehiculo","listar las caracteristicas de un vehiculo"),
+    (1,"caracteristica","lista la caracteristicas segun el id"),
     (1,"setUbicacionViaje","Guarda la locaclizacion del viaje GPS");
 
 

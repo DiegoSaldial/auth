@@ -12,6 +12,7 @@ import (
 	"taxis/database/auth/usuarios"
 	"taxis/database/auth/xauth"
 	"taxis/graph/model"
+	"taxis/taxis/caracteristicas"
 	"taxis/taxis/categoriavehiculos"
 	"taxis/taxis/conductorvehiculos"
 	"taxis/taxis/direcciones"
@@ -165,6 +166,15 @@ func (r *mutationResolver) SetUbicacionViaje(ctx context.Context, input model.Cr
 	return viajeslocations.SetUbicacion(r.DB, input)
 }
 
+// CreateUpdateCaracteristica is the resolver for the createUpdateCaracteristica field.
+func (r *mutationResolver) CreateUpdateCaracteristica(ctx context.Context, input model.NewCaracteristica) (*model.CaracteristicasVehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "createUpdateCaracteristica")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return caracteristicas.Crear(r.DB, input)
+}
+
 // UsuarioByUsername is the resolver for the usuarioByUsername field.
 func (r *queryResolver) UsuarioByUsername(ctx context.Context, username string) (*model.UsuariosResponse, error) {
 	data, err := xauth.CtxValue(ctx, r.DB, "usuarioByUsername")
@@ -291,6 +301,15 @@ func (r *queryResolver) VehiculosByConductor(ctx context.Context, usuarioID stri
 	return vehiculos.ListarByConductor(r.DB, usuarioID)
 }
 
+// VehiculosByCaracteristica is the resolver for the vehiculosByCaracteristica field.
+func (r *queryResolver) VehiculosByCaracteristica(ctx context.Context, id string) ([]*model.VehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "vehiculosByCaracteristica")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return vehiculos.ListarByCaracteristica(r.DB, id)
+}
+
 // ConductoresByVehiculo is the resolver for the conductoresByVehiculo field.
 func (r *queryResolver) ConductoresByVehiculo(ctx context.Context, vehiculoID string) ([]*model.UsuariosResponse, error) {
 	data, err := xauth.CtxValueApp(ctx, r.DB, "conductoresByVehiculo")
@@ -370,6 +389,33 @@ func (r *queryResolver) ViajesByFecha(ctx context.Context, input model.QueryFech
 		return nil, errors.New(err.Error())
 	}
 	return viajes.ListarByFechas(r.DB, input)
+}
+
+// Caracteristicas is the resolver for the caracteristicas field.
+func (r *queryResolver) Caracteristicas(ctx context.Context) ([]*model.CaracteristicasVehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "caracteristicas")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return caracteristicas.Listar(r.DB)
+}
+
+// Caracteristica is the resolver for the caracteristica field.
+func (r *queryResolver) Caracteristica(ctx context.Context, id string) (*model.CaracteristicasVehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "caracteristica")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return caracteristicas.GetById(r.DB, id)
+}
+
+// CaracteristicasByVehiculo is the resolver for the caracteristicasByVehiculo field.
+func (r *queryResolver) CaracteristicasByVehiculo(ctx context.Context, id string) ([]*model.CaracteristicasVehiculosResponse, error) {
+	data, err := xauth.CtxValueApp(ctx, r.DB, "caracteristicasByVehiculo")
+	if data == nil {
+		return nil, errors.New(err.Error())
+	}
+	return caracteristicas.ListarByVehiculo(r.DB, id)
 }
 
 // Mutation returns MutationResolver implementation.

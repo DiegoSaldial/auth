@@ -55,6 +55,7 @@ type RolPermiso {
   """ los roles que tienen acceso a este permiso, expresado en suma sumaria << bits"""
   rol_bits: Int!
 }
+
 # ==============================================================================
 
 type UsuariosResponse {
@@ -128,6 +129,7 @@ input UpdateRol {
   nombre: String! 
   permisos: [String!]!
 } 
+
 # ==============================================================================
 
 
@@ -166,6 +168,8 @@ type Query {
     vehiculosByCategoria(categoria_id:ID!): [VehiculosResponse!]!
     """ Retorna vehiculos asociados a un conductor """
     vehiculosByConductor(usuario_id:ID!): [VehiculosResponse!]!
+    """ Retorna vehiculos asociados a una caracteristica """
+    vehiculosByCaracteristica(id:ID!): [VehiculosResponse!]!
     """ Retorna los usuarios asignados a un vehiculo """
     conductoresByVehiculo(vehiculo_id:ID!): [UsuariosResponse!]!
     """ Retorna los usuarios asignados como conductores """
@@ -184,6 +188,12 @@ type Query {
     viajesByCategoria(categoria_id:ID!): [ViajesResponse!]!
     """ Retorna los viajes en el rango de fechas y los que no tienen conductor asignado y estado 1 """
     viajesByFecha(input:QueryFechas!): [ViajesResponse!]!
+    """ Retorna todas las caracteristicas registradas en el sistema """
+    caracteristicas: [CaracteristicasVehiculosResponse!]!
+    """ Retorna la caracteristica segun el id """
+    caracteristica(id:ID!): CaracteristicasVehiculosResponse!
+    """ Retorna la caracteristica segun el id de un vehiculo """
+    caracteristicasByVehiculo(id:ID!): [CaracteristicasVehiculosResponse!]!
 }
 
 
@@ -237,4 +247,6 @@ type Mutation {
     finalizarViaje(id:ID!): ViajesResponse!
     """ Crea un registro de la ubicacion actual del viaje """
     setUbicacionViaje(input:CreateViajesLocations!): ViajesLocations!
+    """ Registrar o Actualizar una caracteritica para los vehiculos """
+    createUpdateCaracteristica(input:NewCaracteristica!): CaracteristicasVehiculosResponse!
 }
